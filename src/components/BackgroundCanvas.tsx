@@ -51,56 +51,24 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         return "rgba(125,200,255,0.9)";
       };
 
-      const pts: { x: number; y: number; c: string }[] = [];
-      const links: { x1: number; y1: number; x2: number; y2: number; c: string }[] = [];
+      const targets: { tx: number; ty: number; c: string }[] = [];
       const step = 3;
-      const gapTol = step * 2; // allow tiny gaps within a run
-
-      // Horizontal straight runs
       for (let y = 0; y < iconMaxY; y += step) {
-        let startX = -1, runColor: string | null = null, gap = 0;
-        for (let x = 0; x <= size; x += step) {
-          const c = x < size ? colorAt(x, y) : null;
-          if (c && (runColor === null || c === runColor)) {
-            if (startX < 0) { startX = x; runColor = c; }
-            gap = 0;
-          } else if (startX >= 0 && gap < gapTol && c === null && x < size) {
-            gap += step;
-          } else {
-            if (startX >= 0 && x - startX > step * 2) {
-              links.push({ x1: startX, y1: y, x2: x - gap - step, y2: y, c: runColor! });
-            }
-            startX = c ? x : -1;
-            runColor = c;
-            gap = 0;
-          }
+        for (let x = 0; x < size; x += step) {
+          const c = colorAt(x, y);
+          if (c) targets.push({ tx: x, ty: y, c });
         }
       }
 
-      // Vertical straight runs
-      for (let x = 0; x < size; x += step) {
-        let startY = -1, runColor: string | null = null, gap = 0;
-        for (let y = 0; y <= iconMaxY; y += step) {
-          const c = y < iconMaxY ? colorAt(x, y) : null;
-          if (c && (runColor === null || c === runColor)) {
-            if (startY < 0) { startY = y; runColor = c; }
-            gap = 0;
-          } else if (startY >= 0 && gap < gapTol && c === null && y < iconMaxY) {
-            gap += step;
-          } else {
-            if (startY >= 0 && y - startY > step * 2) {
-              links.push({ x1: x, y1: startY, x2: x, y2: y - gap - step, c: runColor! });
-              pts.push({ x, y: startY, c: runColor! });
-            }
-            startY = c ? y : -1;
-            runColor = c;
-            gap = 0;
-          }
-        }
-      }
-
-      logoPointsRef.current = pts;
-      logoLinksRef.current = links as never;
+      // Give each target a random starting position (off-screen scatter) + delay.
+      logoParticlesRef.current = targets.map((t) => ({
+        tx: t.tx,
+        ty: t.ty,
+        sx: (Math.random() - 0.5) * 2,
+        sy: (Math.random() - 0.5) * 2,
+        c: t.c,
+        delay: Math.random() * 0.5,
+      }));
     };
 
     const particleCount = Math.min(110, Math.floor((w * h) / 16000));
