@@ -207,43 +207,28 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
       // Logo formation driven by scroll — lines, glowing, bigger
       const pts = logoPointsRef.current;
       const links = logoLinksRef.current;
-      if (pts.length && links.length) {
+      if (links.length) {
         const progress = Math.min(1, Math.max(0, (scrollRef.current - 0.03) * 1.5));
         const logoSize = Math.min(w * 0.95, h * 0.95, 880);
         const scale = logoSize / 220;
         const cx = w / 2 - logoSize / 2;
         const cy = h / 2 - logoSize / 2;
         const visibleLinks = Math.floor(links.length * progress);
-        const wobble = (1 - progress) * 24;
-        const pulse = 0.6 + 0.4 * Math.sin(t * 3);
+        const pulse = 0.6 + 0.4 * Math.sin(t * 2.5);
 
         ctx.save();
-        ctx.shadowBlur = 18 + 10 * pulse;
-        ctx.lineWidth = 1.4;
-        ctx.globalAlpha = 0.35 + 0.6 * progress;
+        ctx.shadowBlur = 6 + 4 * pulse; // lighter glow
+        ctx.lineWidth = 1.2;
+        ctx.lineCap = "round";
+        ctx.globalAlpha = 0.3 + 0.55 * progress;
         for (let i = 0; i < visibleLinks; i++) {
           const l = links[i];
-          const pa = pts[l.a], pb = pts[l.b];
-          const ox1 = Math.sin(t * 1.8 + l.a) * wobble;
-          const oy1 = Math.cos(t * 1.8 + l.a * 0.7) * wobble;
-          const ox2 = Math.sin(t * 1.8 + l.b) * wobble;
-          const oy2 = Math.cos(t * 1.8 + l.b * 0.7) * wobble;
           ctx.strokeStyle = l.c;
           ctx.shadowColor = l.c;
           ctx.beginPath();
-          ctx.moveTo(cx + pa.x * scale + ox1, cy + pa.y * scale + oy1);
-          ctx.lineTo(cx + pb.x * scale + ox2, cy + pb.y * scale + oy2);
+          ctx.moveTo(cx + l.x1 * scale, cy + l.y1 * scale);
+          ctx.lineTo(cx + l.x2 * scale, cy + l.y2 * scale);
           ctx.stroke();
-        }
-        // bright node accents
-        ctx.shadowBlur = 22 * pulse;
-        for (let i = 0; i < pts.length * progress; i++) {
-          const p = pts[i];
-          ctx.fillStyle = p.c;
-          ctx.shadowColor = p.c;
-          ctx.beginPath();
-          ctx.arc(cx + p.x * scale, cy + p.y * scale, 1.6, 0, Math.PI * 2);
-          ctx.fill();
         }
         ctx.restore();
       }
