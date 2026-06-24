@@ -4,8 +4,7 @@ import { useEffect, useRef } from "react";
 export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef(0);
-  const logoPointsRef = useRef<{ x: number; y: number; c: string }[]>([]);
-  const logoLinksRef = useRef<{ x1: number; y1: number; x2: number; y2: number; c: string }[]>([]);
+  const logoParticlesRef = useRef<{ tx: number; ty: number; sx: number; sy: number; c: string; delay: number }[]>([]);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -52,56 +51,24 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         return "rgba(125,200,255,0.9)";
       };
 
-      const pts: { x: number; y: number; c: string }[] = [];
-      const links: { x1: number; y1: number; x2: number; y2: number; c: string }[] = [];
+      const targets: { tx: number; ty: number; c: string }[] = [];
       const step = 3;
-      const gapTol = step * 2; // allow tiny gaps within a run
-
-      // Horizontal straight runs
       for (let y = 0; y < iconMaxY; y += step) {
-        let startX = -1, runColor: string | null = null, gap = 0;
-        for (let x = 0; x <= size; x += step) {
-          const c = x < size ? colorAt(x, y) : null;
-          if (c && (runColor === null || c === runColor)) {
-            if (startX < 0) { startX = x; runColor = c; }
-            gap = 0;
-          } else if (startX >= 0 && gap < gapTol && c === null && x < size) {
-            gap += step;
-          } else {
-            if (startX >= 0 && x - startX > step * 2) {
-              links.push({ x1: startX, y1: y, x2: x - gap - step, y2: y, c: runColor! });
-            }
-            startX = c ? x : -1;
-            runColor = c;
-            gap = 0;
-          }
+        for (let x = 0; x < size; x += step) {
+          const c = colorAt(x, y);
+          if (c) targets.push({ tx: x, ty: y, c });
         }
       }
 
-      // Vertical straight runs
-      for (let x = 0; x < size; x += step) {
-        let startY = -1, runColor: string | null = null, gap = 0;
-        for (let y = 0; y <= iconMaxY; y += step) {
-          const c = y < iconMaxY ? colorAt(x, y) : null;
-          if (c && (runColor === null || c === runColor)) {
-            if (startY < 0) { startY = y; runColor = c; }
-            gap = 0;
-          } else if (startY >= 0 && gap < gapTol && c === null && y < iconMaxY) {
-            gap += step;
-          } else {
-            if (startY >= 0 && y - startY > step * 2) {
-              links.push({ x1: x, y1: startY, x2: x, y2: y - gap - step, c: runColor! });
-              pts.push({ x, y: startY, c: runColor! });
-            }
-            startY = c ? y : -1;
-            runColor = c;
-            gap = 0;
-          }
-        }
-      }
-
-      logoPointsRef.current = pts;
-      logoLinksRef.current = links as never;
+      // Give each target a random starting position (off-screen scatter) + delay.
+      logoParticlesRef.current = targets.map((t) => ({
+        tx: t.tx,
+        ty: t.ty,
+        sx: (Math.random() - 0.5) * 2,
+        sy: (Math.random() - 0.5) * 2,
+        c: t.c,
+        delay: Math.random() * 0.5,
+      }));
     };
 
     const particleCount = Math.min(110, Math.floor((w * h) / 16000));
@@ -204,31 +171,43 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         }
       });
 
-      // Logo formation driven by scroll — lines, glowing, bigger
-      const pts = logoPointsRef.current;
-      const links = logoLinksRef.current;
-      if (links.length) {
-        const progress = Math.min(1, Math.max(0, (scrollRef.current - 0.03) * 1.5));
-        const logoSize = Math.min(w * 0.95, h * 0.95, 880);
+      // Logo formation — particles gathering into the icon shape.
+      const lp = logoParticlesRef.current;
+      if (lp.length) {
+        const progress = Math.min(1, Math.max(0, (scrollRef.current - 0.02) * 1.4));
+        const logoSize = Math.min(w * 0.95, h * 0.9, 880);
         const scale = logoSize / 220;
         const cx = w / 2 - logoSize / 2;
         const cy = h / 2 - logoSize / 2;
-        const visibleLinks = Math.floor(links.length * progress);
-        const pulse = 0.6 + 0.4 * Math.sin(t * 2.5);
+        const scatterX = w * 0.6;
+        const scatterY = h * 0.5;
+        const centerX = w / 2;
+        const centerY = h / 2;
+        const pulse = 0.7 + 0.3 * Math.sin(t * 2.5);
 
         ctx.save();
-        ctx.shadowBlur = 6 + 4 * pulse; // lighter glow
-        ctx.lineWidth = 1.2;
-        ctx.lineCap = "round";
-        ctx.globalAlpha = 0.3 + 0.55 * progress;
-        for (let i = 0; i < visibleLinks; i++) {
-          const l = links[i];
-          ctx.strokeStyle = l.c;
-          ctx.shadowColor = l.c;
+        ctx.shadowBlur = 4 + 3 * pulse;
+        const ease = (x: number) => 1 - Math.pow(1 - x, 3);
+        for (let i = 0; i < lp.length; i++) {
+          const p = lp[i];
+          const local = Math.min(1, Math.max(0, (progress - p.delay) / (1 - p.delay)));
+          const k = ease(local);
+          const startX = centerX + p.sx * scatterX;
+          const startY = centerY + p.sy * scatterY;
+          const endX = cx + p.tx * scale;
+          const endY = cy + p.ty * scale;
+          // soft drift while still scattered
+          const drift = (1 - k) * 6;
+          const ox = Math.sin(t * 1.5 + i) * drift;
+          const oy = Math.cos(t * 1.5 + i * 0.7) * drift;
+          const x = startX + (endX - startX) * k + ox;
+          const y = startY + (endY - startY) * k + oy;
+          ctx.globalAlpha = 0.25 + 0.7 * k;
+          ctx.fillStyle = p.c;
+          ctx.shadowColor = p.c;
           ctx.beginPath();
-          ctx.moveTo(cx + l.x1 * scale, cy + l.y1 * scale);
-          ctx.lineTo(cx + l.x2 * scale, cy + l.y2 * scale);
-          ctx.stroke();
+          ctx.arc(x, y, 1.3 + 0.6 * k, 0, Math.PI * 2);
+          ctx.fill();
         }
         ctx.restore();
       }
