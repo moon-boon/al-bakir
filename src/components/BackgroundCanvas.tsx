@@ -5,7 +5,7 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef(0);
   const logoPointsRef = useRef<{ x: number; y: number; c: string }[]>([]);
-  const logoLinksRef = useRef<{ a: number; b: number; c: string }[]>([]);
+  const logoLinksRef = useRef<{ x1: number; y1: number; x2: number; y2: number; c: string }[]>([]);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -37,36 +37,71 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
       const octx = off.getContext("2d")!;
       octx.drawImage(img, 0, 0, size, size);
       const data = octx.getImageData(0, 0, size, size).data;
+
+      // Only sample the icon area (top portion), skip the "Al-Bakir" text below.
+      const iconMaxY = Math.floor(size * 0.55);
+
+      const colorAt = (x: number, y: number): string | null => {
+        const i = (y * size + x) * 4;
+        const a = data[i + 3];
+        if (a < 120) return null;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        if (r > 180 && g < 130) return "rgba(255,150,70,0.9)";
+        if (g > 140 && r < 160 && b < 160) return "rgba(110,230,160,0.9)";
+        if (r < 90 && g < 90 && b < 90) return "rgba(255,255,255,0.85)";
+        return "rgba(125,200,255,0.9)";
+      };
+
       const pts: { x: number; y: number; c: string }[] = [];
-      const step = 4;
-      for (let y = 0; y < size; y += step) {
-        for (let x = 0; x < size; x += step) {
-          const i = (y * size + x) * 4;
-          const a = data[i + 3];
-          if (a > 120) {
-            const r = data[i], g = data[i + 1], b = data[i + 2];
-            // map original logo palette toward our brand palette
-            let c = "rgba(125,200,255,0.95)"; // blue default
-            if (r > 180 && g < 130) c = "rgba(255,150,70,0.95)"; // orange
-            else if (g > 140 && r < 160 && b < 160) c = "rgba(110,230,160,0.95)"; // green
-            else if (r < 90 && g < 90 && b < 90) c = "rgba(255,255,255,0.85)"; // ink
-            pts.push({ x, y, c });
+      const links: { x1: number; y1: number; x2: number; y2: number; c: string }[] = [];
+      const step = 3;
+      const gapTol = step * 2; // allow tiny gaps within a run
+
+      // Horizontal straight runs
+      for (let y = 0; y < iconMaxY; y += step) {
+        let startX = -1, runColor: string | null = null, gap = 0;
+        for (let x = 0; x <= size; x += step) {
+          const c = x < size ? colorAt(x, y) : null;
+          if (c && (runColor === null || c === runColor)) {
+            if (startX < 0) { startX = x; runColor = c; }
+            gap = 0;
+          } else if (startX >= 0 && gap < gapTol && c === null && x < size) {
+            gap += step;
+          } else {
+            if (startX >= 0 && x - startX > step * 2) {
+              links.push({ x1: startX, y1: y, x2: x - gap - step, y2: y, c: runColor! });
+            }
+            startX = c ? x : -1;
+            runColor = c;
+            gap = 0;
           }
         }
       }
-      logoPointsRef.current = pts;
-      // Build links between nearby points (acts as line skeleton)
-      const links: { a: number; b: number; c: string }[] = [];
-      const maxD2 = (step * 2.4) * (step * 2.4);
-      for (let i = 0; i < pts.length; i++) {
-        for (let j = i + 1; j < pts.length; j++) {
-          const dx = pts[i].x - pts[j].x;
-          const dy = pts[i].y - pts[j].y;
-          const d2 = dx * dx + dy * dy;
-          if (d2 < maxD2) links.push({ a: i, b: j, c: pts[i].c });
+
+      // Vertical straight runs
+      for (let x = 0; x < size; x += step) {
+        let startY = -1, runColor: string | null = null, gap = 0;
+        for (let y = 0; y <= iconMaxY; y += step) {
+          const c = y < iconMaxY ? colorAt(x, y) : null;
+          if (c && (runColor === null || c === runColor)) {
+            if (startY < 0) { startY = y; runColor = c; }
+            gap = 0;
+          } else if (startY >= 0 && gap < gapTol && c === null && y < iconMaxY) {
+            gap += step;
+          } else {
+            if (startY >= 0 && y - startY > step * 2) {
+              links.push({ x1: x, y1: startY, x2: x, y2: y - gap - step, c: runColor! });
+              pts.push({ x, y: startY, c: runColor! });
+            }
+            startY = c ? y : -1;
+            runColor = c;
+            gap = 0;
+          }
         }
       }
-      logoLinksRef.current = links;
+
+      logoPointsRef.current = pts;
+      logoLinksRef.current = links as never;
     };
 
     const particleCount = Math.min(110, Math.floor((w * h) / 16000));
@@ -172,43 +207,28 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
       // Logo formation driven by scroll — lines, glowing, bigger
       const pts = logoPointsRef.current;
       const links = logoLinksRef.current;
-      if (pts.length && links.length) {
+      if (links.length) {
         const progress = Math.min(1, Math.max(0, (scrollRef.current - 0.03) * 1.5));
         const logoSize = Math.min(w * 0.95, h * 0.95, 880);
         const scale = logoSize / 220;
         const cx = w / 2 - logoSize / 2;
         const cy = h / 2 - logoSize / 2;
         const visibleLinks = Math.floor(links.length * progress);
-        const wobble = (1 - progress) * 24;
-        const pulse = 0.6 + 0.4 * Math.sin(t * 3);
+        const pulse = 0.6 + 0.4 * Math.sin(t * 2.5);
 
         ctx.save();
-        ctx.shadowBlur = 18 + 10 * pulse;
-        ctx.lineWidth = 1.4;
-        ctx.globalAlpha = 0.35 + 0.6 * progress;
+        ctx.shadowBlur = 6 + 4 * pulse; // lighter glow
+        ctx.lineWidth = 1.2;
+        ctx.lineCap = "round";
+        ctx.globalAlpha = 0.3 + 0.55 * progress;
         for (let i = 0; i < visibleLinks; i++) {
           const l = links[i];
-          const pa = pts[l.a], pb = pts[l.b];
-          const ox1 = Math.sin(t * 1.8 + l.a) * wobble;
-          const oy1 = Math.cos(t * 1.8 + l.a * 0.7) * wobble;
-          const ox2 = Math.sin(t * 1.8 + l.b) * wobble;
-          const oy2 = Math.cos(t * 1.8 + l.b * 0.7) * wobble;
           ctx.strokeStyle = l.c;
           ctx.shadowColor = l.c;
           ctx.beginPath();
-          ctx.moveTo(cx + pa.x * scale + ox1, cy + pa.y * scale + oy1);
-          ctx.lineTo(cx + pb.x * scale + ox2, cy + pb.y * scale + oy2);
+          ctx.moveTo(cx + l.x1 * scale, cy + l.y1 * scale);
+          ctx.lineTo(cx + l.x2 * scale, cy + l.y2 * scale);
           ctx.stroke();
-        }
-        // bright node accents
-        ctx.shadowBlur = 22 * pulse;
-        for (let i = 0; i < pts.length * progress; i++) {
-          const p = pts[i];
-          ctx.fillStyle = p.c;
-          ctx.shadowColor = p.c;
-          ctx.beginPath();
-          ctx.arc(cx + p.x * scale, cy + p.y * scale, 1.6, 0, Math.PI * 2);
-          ctx.fill();
         }
         ctx.restore();
       }
