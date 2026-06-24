@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import BackgroundCanvas from "@/components/BackgroundCanvas";
+import Bento from "@/components/Bento";
+import FeaturedProjects from "@/components/FeaturedProjects";
+import MagneticButton from "@/components/MagneticButton";
+import Marquee from "@/components/Marquee";
+import Counter from "@/components/Counter";
 import logoSrc from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
@@ -17,7 +22,7 @@ export const Route = createFileRoute("/")({
 
 function useReveal() {
   useEffect(() => {
-    const els = document.querySelectorAll(".fade-up");
+    const els = document.querySelectorAll(".fade-up:not(.is-visible)");
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -27,7 +32,7 @@ function useReveal() {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.12 }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
@@ -44,6 +49,7 @@ function Nav() {
   }, []);
   const links = [
     { href: "#services", label: "Services" },
+    { href: "#projects", label: "Projects" },
     { href: "#about", label: "About" },
     { href: "#contact", label: "Contact" },
   ];
@@ -62,12 +68,19 @@ function Nav() {
             <div className="text-[10px] tracking-[0.35em] text-ink-dim">PVT · LTD</div>
           </div>
         </a>
-        <nav className="hidden gap-10 md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm font-medium uppercase tracking-wider text-ink-dim transition-colors hover:text-orange">
+            <a key={l.href} href={l.href} className="text-xs font-medium uppercase tracking-[0.2em] text-ink-dim transition-colors hover:text-orange">
               {l.label}
             </a>
           ))}
+          <span className="ml-2 flex items-center gap-2 border border-green/40 px-3 py-1.5 text-[10px] uppercase tracking-[0.25em] text-green">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-70" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green" />
+            </span>
+            Available 24/7
+          </span>
         </nav>
         <button
           aria-label="Menu"
@@ -101,35 +114,38 @@ function Nav() {
 function Hero() {
   return (
     <section id="top" className="relative flex min-h-screen items-center justify-center px-6 pt-24">
-      <div className="mx-auto max-w-5xl text-center">
-        <div className="fade-up mb-6 inline-block border border-blue/40 px-4 py-1.5 text-[10px] tracking-[0.4em] text-blue-bright">
-          ISLAMABAD · EST. EXCELLENCE
+      <div className="mx-auto max-w-6xl text-center">
+        <div className="fade-up mb-6 inline-flex items-center gap-2 border border-blue/40 px-4 py-1.5 text-[10px] tracking-[0.4em] text-blue-bright">
+          <span className="h-1 w-1 bg-blue-bright" />
+          ISLAMABAD · DESIGN · BUILD · INVEST
         </div>
-        <h1 className="fade-up font-display text-5xl leading-[1.05] sm:text-6xl md:text-[78px]">
+        <h1 className="fade-up font-display leading-[0.95]" style={{ fontSize: "clamp(3.5rem, 9vw, 7.5rem)" }}>
           <span className="text-gradient-bw">Where Architecture</span>
           <br />
-          <span className="text-gradient-bw">Meets Ambition</span>
+          <span className="text-gradient-bw italic">Meets Ambition</span>
         </h1>
-        <p className="fade-up mx-auto mt-6 max-w-2xl text-sm tracking-[0.3em] text-ink-dim uppercase">
+        <p className="fade-up mx-auto mt-8 max-w-xl text-sm tracking-[0.3em] text-ink-dim uppercase">
           Design · Construction · Real Estate · Islamabad
         </p>
 
-        <div className="fade-up mt-10 flex flex-wrap items-center justify-center gap-4">
+        <div className="fade-up mt-12 grid grid-cols-3 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-4">
           {[
-            { num: "4.8", label: "Google Rating", c: "text-blue-bright border-blue/40" },
-            { num: "27", label: "Verified Reviews", c: "text-orange border-orange/40" },
-            { num: "24/7", label: "Service Hours", c: "text-green border-green/40" },
+            { num: 4.8, dec: 1, label: "Google Rating", c: "text-blue-bright border-blue/40" },
+            { num: 27, dec: 0, label: "Reviews", c: "text-orange border-orange/40", suffix: "" },
+            { num: 24, dec: 0, label: "Hour Service", c: "text-green border-green/40", suffix: "/7" },
           ].map((s) => (
-            <div key={s.label} className={`flex items-center gap-3 border px-5 py-3 ${s.c}`}>
-              <span className="font-display text-3xl leading-none">{s.num}</span>
-              <span className="text-[10px] uppercase tracking-[0.25em] text-ink-dim">{s.label}</span>
+            <div key={s.label} className={`flex flex-col items-center gap-1 border px-4 py-4 sm:flex-row sm:gap-3 sm:py-3 ${s.c}`}>
+              <span className="font-display text-3xl leading-none tabular-nums">
+                <Counter to={s.num} decimals={s.dec} suffix={s.suffix ?? ""} />
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-ink-dim sm:text-[10px]">{s.label}</span>
             </div>
           ))}
         </div>
 
         <div className="fade-up mt-12 flex flex-wrap items-center justify-center gap-4">
-          <a href="#contact" className="btn-primary">Start Your Project</a>
-          <a href="#services" className="btn-ghost">View Our Work</a>
+          <MagneticButton as="a" href="#contact" className="btn-primary">Start Your Project</MagneticButton>
+          <a href="#projects" className="btn-ghost">View Our Work</a>
         </div>
       </div>
 
@@ -138,73 +154,6 @@ function Hero() {
           <path d="M12 4v28M4 24l8 8 8-8" stroke="currentColor" strokeWidth="1.4" fill="none" />
         </svg>
       </a>
-    </section>
-  );
-}
-
-const services = [
-  {
-    title: "Architecture & Design",
-    desc: "Bespoke residential and commercial design rooted in context, climate and craft.",
-    color: "blue-bright",
-    icon: (
-      <svg viewBox="0 0 64 64" className="h-12 w-12" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="32" cy="20" r="4" />
-        <path d="M32 24v8M14 56l18-24 18 24M22 44h20" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "Construction",
-    desc: "End to end build delivery with disciplined timelines and material integrity.",
-    color: "orange",
-    icon: (
-      <svg viewBox="0 0 64 64" className="h-12 w-12" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M8 56V28l24-16 24 16v28" strokeLinejoin="round" />
-        <path d="M24 56V40h16v16M8 56h48" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "Real Estate",
-    desc: "Curated property opportunities across B-17 Islamabad and surrounding sectors.",
-    color: "green",
-    icon: (
-      <svg viewBox="0 0 64 64" className="h-12 w-12" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="22" cy="32" r="8" />
-        <path d="M30 32h26l-6 6M50 38v6" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-];
-
-function Services() {
-  return (
-    <section id="services" className="relative px-6 py-32">
-      <div className="mx-auto max-w-7xl">
-        <div className="fade-up mb-16 text-center">
-          <div className="mb-4 text-[10px] tracking-[0.4em] text-orange">WHAT WE DO</div>
-          <h2 className="font-display text-4xl md:text-6xl text-gradient-bw">Three disciplines, one studio</h2>
-        </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {services.map((s, i) => (
-            <article
-              key={s.title}
-              className="fade-up group relative border border-blue/20 bg-black/40 p-10 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-blue-bright/60"
-              style={{ transitionDelay: `${i * 80}ms` }}
-            >
-              <div className={`mb-8 text-${s.color} transition-transform duration-500 group-hover:rotate-[6deg]`}>
-                {s.icon}
-              </div>
-              <h3 className="mb-3 font-display text-2xl">{s.title}</h3>
-              <p className="text-sm leading-relaxed text-ink-dim">{s.desc}</p>
-              <div className="mt-8 text-[10px] tracking-[0.3em] text-blue-bright opacity-0 transition-opacity group-hover:opacity-100">
-                ENQUIRE →
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
     </section>
   );
 }
@@ -237,7 +186,6 @@ function About() {
           ctx.fillRect(x, y, 2, 2);
         }
       }
-      // connecting lines
       ctx.strokeStyle = "rgba(255,150,70,0.25)";
       ctx.lineWidth = 1;
       for (let i = 0; i < 6; i++) {
@@ -254,6 +202,12 @@ function About() {
     window.addEventListener("resize", resize);
     return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
   }, []);
+
+  const stats = [
+    { num: 12, suffix: "+", label: "Years active" },
+    { num: 80, suffix: "+", label: "Projects delivered" },
+    { num: 7, suffix: "", label: "Active sites" },
+  ];
 
   return (
     <section id="about" className="relative px-6 py-32">
@@ -278,6 +232,18 @@ function About() {
             Our work is shaped by Pakistani context, modern construction discipline and a refusal to
             compromise on detail. Open 24 hours, every day of the week.
           </p>
+
+          <div className="mb-8 grid grid-cols-3 gap-4">
+            {stats.map((s) => (
+              <div key={s.label} className="border border-blue/20 bg-black/40 p-4">
+                <div className="font-display text-3xl text-blue-bright tabular-nums">
+                  <Counter to={s.num} suffix={s.suffix} />
+                </div>
+                <div className="mt-1 text-[10px] uppercase tracking-[0.25em] text-ink-dim">{s.label}</div>
+              </div>
+            ))}
+          </div>
+
           <div className="border border-orange/40 bg-black/40 p-6">
             <div className="mb-2 text-[10px] tracking-[0.3em] text-orange">STUDIO LOCATION</div>
             <div className="font-display text-xl">B-17, Multi Gardens</div>
@@ -289,18 +255,18 @@ function About() {
   );
 }
 
-function RatingBanner() {
+function RatingMarquee() {
+  const items = ["4.8 / 5", "27 Google reviews", "Open 24 hours", "B-17 Islamabad", "Since 2012"];
   return (
-    <section className="relative">
-      <div className="bg-blue px-6 py-10 text-black">
-        <div className="mx-auto grid max-w-7xl items-center gap-6 md:grid-cols-3">
-          <div className="font-display text-7xl leading-none">4.8</div>
-          <div className="text-center text-sm font-semibold uppercase tracking-[0.3em]">
-            Rated on Google Maps by our clients
-          </div>
-          <div className="text-right font-display text-3xl">27 Reviews</div>
-        </div>
-      </div>
+    <section className="relative border-y border-blue/20 bg-blue py-8 text-black">
+      <Marquee speed={28}>
+        {items.map((it) => (
+          <span key={it} className="flex items-center gap-12 font-display text-3xl md:text-4xl">
+            {it}
+            <span className="h-2 w-2 rotate-45 bg-black/70" />
+          </span>
+        ))}
+      </Marquee>
     </section>
   );
 }
@@ -352,21 +318,19 @@ function Contact() {
               </div>
             </div>
 
-            <a
+            <MagneticButton
+              as="a"
               href="https://maps.google.com/?q=Al+Bakir+Pvt+Ltd+B-17+Islamabad"
               target="_blank"
               rel="noopener"
               className="btn-primary"
             >
               Open in Google Maps
-            </a>
+            </MagneticButton>
           </div>
 
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
+            onSubmit={(e) => { e.preventDefault(); setSent(true); }}
             className="fade-up space-y-5 border border-blue/30 bg-black/50 p-8 backdrop-blur-sm"
           >
             {sent ? (
@@ -415,7 +379,9 @@ function Contact() {
                     className="w-full resize-none border border-blue/30 bg-black/60 px-4 py-3 text-ink outline-none focus:border-orange focus:ring-2 focus:ring-orange/40"
                   />
                 </div>
-                <button type="submit" className="btn-primary w-full">Send Enquiry</button>
+                <MagneticButton as="button" type="submit" className="btn-primary w-full">
+                  Send Enquiry
+                </MagneticButton>
               </>
             )}
           </form>
@@ -445,9 +411,9 @@ function Footer() {
           <div className="mb-4 text-[10px] tracking-[0.3em] text-orange">QUICK LINKS</div>
           <ul className="space-y-2 text-sm text-ink-dim">
             <li><a href="#services" className="hover:text-blue-bright">Services</a></li>
+            <li><a href="#projects" className="hover:text-blue-bright">Projects</a></li>
             <li><a href="#about" className="hover:text-blue-bright">About</a></li>
             <li><a href="#contact" className="hover:text-blue-bright">Contact</a></li>
-            <li><a href="https://bakirpvtltd.com" target="_blank" rel="noopener" className="hover:text-blue-bright">bakirpvtltd.com</a></li>
           </ul>
         </div>
         <div>
@@ -479,9 +445,10 @@ function Index() {
       <Nav />
       <main>
         <Hero />
-        <Services />
+        <Bento />
+        <FeaturedProjects />
         <About />
-        <RatingBanner />
+        <RatingMarquee />
         <Contact />
       </main>
       <Footer />
