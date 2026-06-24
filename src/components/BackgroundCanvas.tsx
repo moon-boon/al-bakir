@@ -5,7 +5,7 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef(0);
   const logoPointsRef = useRef<{ x: number; y: number; c: string }[]>([]);
-  const logoLinksRef = useRef<{ a: number; b: number; c: string }[]>([]);
+  const logoLinksRef = useRef<{ x1: number; y1: number; x2: number; y2: number; c: string }[]>([]);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
