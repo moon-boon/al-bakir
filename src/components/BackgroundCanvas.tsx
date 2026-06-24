@@ -37,36 +37,71 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
       const octx = off.getContext("2d")!;
       octx.drawImage(img, 0, 0, size, size);
       const data = octx.getImageData(0, 0, size, size).data;
+
+      // Only sample the icon area (top portion), skip the "Al-Bakir" text below.
+      const iconMaxY = Math.floor(size * 0.55);
+
+      const colorAt = (x: number, y: number): string | null => {
+        const i = (y * size + x) * 4;
+        const a = data[i + 3];
+        if (a < 120) return null;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        if (r > 180 && g < 130) return "rgba(255,150,70,0.9)";
+        if (g > 140 && r < 160 && b < 160) return "rgba(110,230,160,0.9)";
+        if (r < 90 && g < 90 && b < 90) return "rgba(255,255,255,0.85)";
+        return "rgba(125,200,255,0.9)";
+      };
+
       const pts: { x: number; y: number; c: string }[] = [];
-      const step = 4;
-      for (let y = 0; y < size; y += step) {
-        for (let x = 0; x < size; x += step) {
-          const i = (y * size + x) * 4;
-          const a = data[i + 3];
-          if (a > 120) {
-            const r = data[i], g = data[i + 1], b = data[i + 2];
-            // map original logo palette toward our brand palette
-            let c = "rgba(125,200,255,0.95)"; // blue default
-            if (r > 180 && g < 130) c = "rgba(255,150,70,0.95)"; // orange
-            else if (g > 140 && r < 160 && b < 160) c = "rgba(110,230,160,0.95)"; // green
-            else if (r < 90 && g < 90 && b < 90) c = "rgba(255,255,255,0.85)"; // ink
-            pts.push({ x, y, c });
+      const links: { x1: number; y1: number; x2: number; y2: number; c: string }[] = [];
+      const step = 3;
+      const gapTol = step * 2; // allow tiny gaps within a run
+
+      // Horizontal straight runs
+      for (let y = 0; y < iconMaxY; y += step) {
+        let startX = -1, runColor: string | null = null, gap = 0;
+        for (let x = 0; x <= size; x += step) {
+          const c = x < size ? colorAt(x, y) : null;
+          if (c && (runColor === null || c === runColor)) {
+            if (startX < 0) { startX = x; runColor = c; }
+            gap = 0;
+          } else if (startX >= 0 && gap < gapTol && c === null && x < size) {
+            gap += step;
+          } else {
+            if (startX >= 0 && x - startX > step * 2) {
+              links.push({ x1: startX, y1: y, x2: x - gap - step, y2: y, c: runColor! });
+            }
+            startX = c ? x : -1;
+            runColor = c;
+            gap = 0;
           }
         }
       }
-      logoPointsRef.current = pts;
-      // Build links between nearby points (acts as line skeleton)
-      const links: { a: number; b: number; c: string }[] = [];
-      const maxD2 = (step * 2.4) * (step * 2.4);
-      for (let i = 0; i < pts.length; i++) {
-        for (let j = i + 1; j < pts.length; j++) {
-          const dx = pts[i].x - pts[j].x;
-          const dy = pts[i].y - pts[j].y;
-          const d2 = dx * dx + dy * dy;
-          if (d2 < maxD2) links.push({ a: i, b: j, c: pts[i].c });
+
+      // Vertical straight runs
+      for (let x = 0; x < size; x += step) {
+        let startY = -1, runColor: string | null = null, gap = 0;
+        for (let y = 0; y <= iconMaxY; y += step) {
+          const c = y < iconMaxY ? colorAt(x, y) : null;
+          if (c && (runColor === null || c === runColor)) {
+            if (startY < 0) { startY = y; runColor = c; }
+            gap = 0;
+          } else if (startY >= 0 && gap < gapTol && c === null && y < iconMaxY) {
+            gap += step;
+          } else {
+            if (startY >= 0 && y - startY > step * 2) {
+              links.push({ x1: x, y1: startY, x2: x, y2: y - gap - step, c: runColor! });
+              pts.push({ x, y: startY, c: runColor! });
+            }
+            startY = c ? y : -1;
+            runColor = c;
+            gap = 0;
+          }
         }
       }
-      logoLinksRef.current = links;
+
+      logoPointsRef.current = pts;
+      logoLinksRef.current = links as never;
     };
 
     const particleCount = Math.min(110, Math.floor((w * h) / 16000));
