@@ -55,6 +55,18 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         }
       }
       logoPointsRef.current = pts;
+      // Build links between nearby points (acts as line skeleton)
+      const links: { a: number; b: number; c: string }[] = [];
+      const maxD2 = (step * 2.4) * (step * 2.4);
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x;
+          const dy = pts[i].y - pts[j].y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < maxD2) links.push({ a: i, b: j, c: pts[i].c });
+        }
+      }
+      logoLinksRef.current = links;
     };
 
     const particleCount = Math.min(110, Math.floor((w * h) / 16000));
