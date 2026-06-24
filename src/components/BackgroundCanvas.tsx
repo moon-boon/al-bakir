@@ -5,6 +5,7 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef(0);
   const logoPointsRef = useRef<{ x: number; y: number; c: string }[]>([]);
+  const logoLinksRef = useRef<{ a: number; b: number; c: string }[]>([]);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -54,6 +55,18 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         }
       }
       logoPointsRef.current = pts;
+      // Build links between nearby points (acts as line skeleton)
+      const links: { a: number; b: number; c: string }[] = [];
+      const maxD2 = (step * 2.4) * (step * 2.4);
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x;
+          const dy = pts[i].y - pts[j].y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < maxD2) links.push({ a: i, b: j, c: pts[i].c });
+        }
+      }
+      logoLinksRef.current = links;
     };
 
     const particleCount = Math.min(110, Math.floor((w * h) / 16000));
@@ -156,26 +169,48 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         }
       });
 
-      // Logo formation driven by scroll
+      // Logo formation driven by scroll — lines, glowing, bigger
       const pts = logoPointsRef.current;
-      if (pts.length) {
-        const progress = Math.min(1, Math.max(0, (scrollRef.current - 0.05) * 1.6));
-        const logoSize = Math.min(w * 0.65, h * 0.75, 560);
+      const links = logoLinksRef.current;
+      if (pts.length && links.length) {
+        const progress = Math.min(1, Math.max(0, (scrollRef.current - 0.03) * 1.5));
+        const logoSize = Math.min(w * 0.95, h * 0.95, 880);
         const scale = logoSize / 220;
         const cx = w / 2 - logoSize / 2;
         const cy = h / 2 - logoSize / 2;
-        const visible = Math.floor(pts.length * progress);
-        ctx.globalAlpha = 0.25 + 0.55 * progress;
-        for (let i = 0; i < visible; i++) {
-          const p = pts[i];
-          // gentle drift while assembling
-          const wobble = (1 - progress) * 30;
-          const ox = Math.sin(t * 2 + i) * wobble;
-          const oy = Math.cos(t * 2 + i * 0.7) * wobble;
-          ctx.fillStyle = p.c;
-          ctx.fillRect(cx + p.x * scale + ox, cy + p.y * scale + oy, 2.2, 2.2);
+        const visibleLinks = Math.floor(links.length * progress);
+        const wobble = (1 - progress) * 24;
+        const pulse = 0.6 + 0.4 * Math.sin(t * 3);
+
+        ctx.save();
+        ctx.shadowBlur = 18 + 10 * pulse;
+        ctx.lineWidth = 1.4;
+        ctx.globalAlpha = 0.35 + 0.6 * progress;
+        for (let i = 0; i < visibleLinks; i++) {
+          const l = links[i];
+          const pa = pts[l.a], pb = pts[l.b];
+          const ox1 = Math.sin(t * 1.8 + l.a) * wobble;
+          const oy1 = Math.cos(t * 1.8 + l.a * 0.7) * wobble;
+          const ox2 = Math.sin(t * 1.8 + l.b) * wobble;
+          const oy2 = Math.cos(t * 1.8 + l.b * 0.7) * wobble;
+          ctx.strokeStyle = l.c;
+          ctx.shadowColor = l.c;
+          ctx.beginPath();
+          ctx.moveTo(cx + pa.x * scale + ox1, cy + pa.y * scale + oy1);
+          ctx.lineTo(cx + pb.x * scale + ox2, cy + pb.y * scale + oy2);
+          ctx.stroke();
         }
-        ctx.globalAlpha = 1;
+        // bright node accents
+        ctx.shadowBlur = 22 * pulse;
+        for (let i = 0; i < pts.length * progress; i++) {
+          const p = pts[i];
+          ctx.fillStyle = p.c;
+          ctx.shadowColor = p.c;
+          ctx.beginPath();
+          ctx.arc(cx + p.x * scale, cy + p.y * scale, 1.6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
       }
 
       raf = requestAnimationFrame(draw);
