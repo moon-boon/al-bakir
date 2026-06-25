@@ -1,60 +1,63 @@
-# Al Bakir — Bento Redesign Plan
+# Premium White Apple-Style Redesign
 
-Channel a modern bento/dashboard aesthetic (think Apple Newsroom, Linear changelog, Raycast home) on top of the existing black + blue/orange/green palette. Keep the animated logo-formation background and current brand voice.
+Shift the site from dark-blue dominant to a white, airy, Apple-like surface where the logo's brand colors (black, green, orange, blue) appear only as restrained accents.
 
-## Visual direction
+## Design tokens (src/styles.css)
 
-- **Layout language**: modular bento grid — mixed card sizes (2x1, 1x1, 2x2) that snap onto a 12-col grid on desktop, single column on mobile. Sharp 0px radius stays (drafting reference).
-- **Typography**: Cormorant Garamond for display + Inter for UI, already loaded. Increase scale contrast (hero 88–112px clamp, eyebrows 10px tracking 0.4em).
-- **Color**: keep brand tokens. Add subtle inner highlights (`inset 0 1px 0 rgb(255 255 255 / 0.06)`) and 1px borders in `blue/20` for the glass-card look.
-- **Motion (balanced)**: scroll-reveal with stagger via IntersectionObserver, parallax on hero stats and bento tiles, magnetic effect on primary CTAs, animated number counters, marquee for the rating strip, smooth in-page scroll.
+Light theme as default:
+- `--background`: #ffffff
+- `--surface`: #f5f5f7 (Apple's classic section grey)
+- `--surface-2`: #fbfbfd
+- `--foreground` / ink: #1d1d1f
+- `--muted-foreground`: #6e6e73
+- `--border`: #d2d2d7
+- Brand accents (used sparingly, never as full backgrounds):
+  - `--brand-blue`: #0a84ff
+  - `--brand-green`: #30d158
+  - `--brand-orange`: #ff9f0a
+  - `--brand-ink`: #1d1d1f
+- Typography: Sora (display/headings), Manrope (body) — load via `<link>` in `__root.tsx`.
+- Shadows: soft, low-contrast (`0 1px 2px rgb(0 0 0 / 0.04)`, `0 20px 40px -20px rgb(0 0 0 / 0.08)`).
+- Radius: 18–22px (Apple-like pill/rounded cards).
 
-## Page structure (top to bottom)
+## Composition (Apple stacked sections)
 
-1. **Sticky nav** — refine current. Add a small "Available 24/7" pill with green dot, magnetic hover on links.
-2. **Hero (100vh)** — keep canvas logo formation. Larger headline, eyebrow tag, two CTAs (primary magnetic, ghost). Below: three live-counter stat pills.
-3. **Bento overview grid** (new) — 6 tiles on a 12-col grid:
-   - Tile A (8x2): "Three disciplines, one studio" — large display copy + animated underline.
-   - Tile B (4x2): Live time in Islamabad + "Open now" status (real Date).
-   - Tile C (4x2): Architecture service — icon + 1-liner.
-   - Tile D (4x2): Construction service — icon + 1-liner.
-   - Tile E (4x2): Real Estate service — icon + 1-liner.
-   - Tile F (12x1): Marquee strip of capabilities (BIM · CAD · Project Management · Interior Design · Site Supervision · Real Estate Advisory) scrolling slowly.
-4. **Featured Projects gallery** (new) — 4–6 placeholder project cards in a bento mosaic (mix of portrait, landscape, square). Each card: image slot (gradient placeholder ready for real photos), category tag, title, location, year. Hover: lift + caption reveal. Filter chips on top (All / Architecture / Construction / Real Estate).
-5. **About** — keep split with animated grid canvas, refine copy hierarchy, add a small "Founders / Studio" stat row (Years active, Projects delivered, Active sites).
-6. **Rating banner** — convert to marquee: "4.8 ★ · 27 reviews · Open 24 hours · B-17 Islamabad" repeating.
-7. **Contact** — keep two-column. Polish: floating labels, magnetic submit, animated success state stays.
-8. **Footer** — unchanged structure, tighten spacing.
+Restructure `src/routes/index.tsx` into full-width stacked sections, each ~100vh-ish, generous whitespace, single focal idea per section:
 
-## Motion specifics
+1. **Hero** — White bg, oversized Sora headline in near-black, one-line subhead in `--muted-foreground`, two pill CTAs (primary black, secondary ghost). Particle logo canvas behind, retuned for light bg.
+2. **Disciplines strip** — Grey `#f5f5f7` band, three columns (Architecture / Interior / Construction) with thin colored underline using brand accents (one color each).
+3. **Featured project showcase** — Alternating white/grey sections, single large rounded card per row, parallax image placeholder, caption left-aligned. Replaces current dense bento grid.
+4. **Stats row** — White, four counters with hairline dividers, label in muted grey.
+5. **Capabilities marquee** — Grey band, thin type, monochrome.
+6. **About** — White, two-column editorial: serif-weight Sora headline left, paragraph right.
+7. **Contact** — Grey band, large headline, single inline email + magnetic CTA.
+8. **Footer** — White, minimal, hairline top border.
 
-- `useReveal` already present — extend with `data-delay` for stagger.
-- Magnetic CTA: small hook that translates the button toward cursor within 12px on mousemove, springs back on leave. Disabled under `prefers-reduced-motion` and on touch.
-- Parallax: translateY on bento tiles based on scroll position via `requestAnimationFrame`.
-- Counters: easeOutCubic from 0 → target when stat row enters viewport.
-- Marquee: pure CSS keyframes, pause on hover.
+## Background canvas (BackgroundCanvas.tsx)
 
-## Featured Projects data
+Retune for light theme:
+- Particles: `rgba(29,29,31,0.35)` (ink) with occasional accent dots in brand blue/green/orange at low opacity.
+- Remove blue glow; replace with very faint shadow.
+- Lower particle count / opacity so it reads as a whisper, not a feature.
 
-Placeholder list in `src/data/projects.ts` so you can swap real content later. Each project: `id, title, location, year, category, aspect, accent`. Image slot uses a CSS gradient + category icon until real photos arrive.
+## Components to update
 
-## Files to add / change
+- `Hero` — restyle for white bg, larger type scale, Apple-style CTA pills.
+- `Bento` → simplify into the stacked sections (keep `LocalTime`, `Counter`, `Marquee` as primitives but drop glass-card aesthetic).
+- `FeaturedProjects` → convert to full-width alternating showcase rows.
+- `MagneticButton` → light theme variants (solid black, ghost outline).
+- All glass/blur/`bento-card` utilities replaced with `surface-card` (white, 1px `--border`, soft shadow, 20px radius).
 
-- `src/routes/index.tsx` — restructure into new sections.
-- `src/components/BackgroundCanvas.tsx` — unchanged.
-- `src/components/Bento.tsx` — new, renders overview grid.
-- `src/components/FeaturedProjects.tsx` — new, gallery + filter.
-- `src/components/MagneticButton.tsx` — new wrapper.
-- `src/components/Marquee.tsx` — new.
-- `src/components/Counter.tsx` — new (animated number).
-- `src/components/LocalTime.tsx` — new (Islamabad clock + open status).
-- `src/data/projects.ts` — new placeholder data.
-- `src/styles.css` — add `bento-card`, `marquee` utilities, refined focus rings; keep all tokens.
+## Out of scope
 
-## Out of scope (for now)
+- Real project photography (placeholders remain).
+- Dark mode toggle.
+- Content/copy rewrites beyond what white-space demands.
+- New sections beyond what's listed.
 
-- Real project photography (you'll supply later — slots are ready).
-- Testimonials, FAQ, Process sections (we cut these per your answer).
-- Backend / form submission wiring.
+## Technical notes
 
-Ready to build when you approve.
+- Add Sora + Manrope via `<link>` tags in `src/routes/__root.tsx` head (per Tailwind v4 remote-font rule).
+- Update `@theme` tokens in `src/styles.css`; replace dark-mode-first values; keep shadcn `@theme inline` mapping intact.
+- Remove/replace `bento-card` utility with `surface-card`; keep `fade-up` and marquee keyframes.
+- No backend, no new packages required (fonts via CDN link tags).
