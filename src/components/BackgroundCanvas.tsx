@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-// Continuous particle field + scroll-driven logo formation in the background.
+// Subtle particle field + scroll-driven logo formation, tuned for white background.
 export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef(0);
@@ -24,7 +24,6 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
     resize();
     window.addEventListener("resize", resize);
 
-    // Sample logo pixels for formation effect
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.src = logoSrc;
@@ -36,8 +35,6 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
       const octx = off.getContext("2d")!;
       octx.drawImage(img, 0, 0, size, size);
       const data = octx.getImageData(0, 0, size, size).data;
-
-      // Only sample the icon area (top portion), skip the "Al-Bakir" text below.
       const iconMaxY = Math.floor(size * 0.55);
 
       const colorAt = (x: number, y: number): string | null => {
@@ -45,10 +42,10 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         const a = data[i + 3];
         if (a < 120) return null;
         const r = data[i], g = data[i + 1], b = data[i + 2];
-        if (r > 180 && g < 130) return "rgba(255,150,70,0.9)";
-        if (g > 140 && r < 160 && b < 160) return "rgba(110,230,160,0.9)";
-        if (r < 90 && g < 90 && b < 90) return "rgba(255,255,255,0.85)";
-        return "rgba(125,200,255,0.9)";
+        if (r > 180 && g < 130) return "rgba(255,159,10,0.85)";       // orange
+        if (g > 140 && r < 160 && b < 160) return "rgba(48,209,88,0.85)"; // green
+        if (r < 90 && g < 90 && b < 90) return "rgba(29,29,31,0.85)";  // ink
+        return "rgba(10,132,255,0.85)";                                // blue
       };
 
       const targets: { tx: number; ty: number; c: string }[] = [];
@@ -60,7 +57,6 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         }
       }
 
-      // Give each target a random starting position (off-screen scatter) + delay.
       logoParticlesRef.current = targets.map((t) => ({
         tx: t.tx,
         ty: t.ty,
@@ -71,15 +67,22 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
       }));
     };
 
-    const particleCount = Math.min(110, Math.floor((w * h) / 16000));
+    const particleCount = Math.min(70, Math.floor((w * h) / 24000));
+    const accentColors = [
+      "rgba(29,29,31,0.32)",
+      "rgba(29,29,31,0.28)",
+      "rgba(29,29,31,0.22)",
+      "rgba(10,132,255,0.30)",
+      "rgba(48,209,88,0.28)",
+      "rgba(255,159,10,0.28)",
+    ];
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.25,
-      vy: (Math.random() - 0.5) * 0.25,
-      r: Math.random() * 1.8 + 0.4,
-      shape: Math.floor(Math.random() * 3),
-      hue: Math.random(),
+      vx: (Math.random() - 0.5) * 0.18,
+      vy: (Math.random() - 0.5) * 0.18,
+      r: Math.random() * 1.3 + 0.4,
+      color: accentColors[Math.floor(Math.random() * accentColors.length)],
     }));
 
     const onScroll = () => {
@@ -94,31 +97,14 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
       t += 0.005;
       ctx.clearRect(0, 0, w, h);
 
-      // Radial vignette at top-center
+      // Very faint top wash
       const grad = ctx.createRadialGradient(w / 2, 0, 0, w / 2, 0, h * 0.9);
-      grad.addColorStop(0, "rgba(125,200,255,0.10)");
-      grad.addColorStop(0.5, "rgba(255,150,70,0.04)");
+      grad.addColorStop(0, "rgba(10,132,255,0.05)");
+      grad.addColorStop(0.5, "rgba(0,0,0,0.02)");
       grad.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Diagonal blueprint lines
-      ctx.save();
-      ctx.translate(w / 2, h / 2);
-      ctx.rotate((15 * Math.PI) / 180);
-      ctx.strokeStyle = "rgba(125,200,255,0.05)";
-      ctx.lineWidth = 1;
-      const span = Math.max(w, h) * 1.5;
-      const offset = (t * 20) % 60;
-      for (let i = -span; i < span; i += 60) {
-        ctx.beginPath();
-        ctx.moveTo(i + offset, -span);
-        ctx.lineTo(i + offset, span);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // Particles
       if (!reduced) {
         particles.forEach((p) => {
           p.x += p.vx;
@@ -130,16 +116,15 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         });
       }
 
-      // Connection lines
-      ctx.strokeStyle = "rgba(125,200,255,0.18)";
-      ctx.lineWidth = 0.6;
+      // Thin connection lines
+      ctx.lineWidth = 0.5;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const a = particles[i], b = particles[j];
           const dx = a.x - b.x, dy = a.y - b.y;
           const d2 = dx * dx + dy * dy;
-          if (d2 < 130 * 130) {
-            ctx.globalAlpha = 1 - d2 / (130 * 130);
+          if (d2 < 120 * 120) {
+            ctx.strokeStyle = `rgba(29,29,31,${0.10 * (1 - d2 / (120 * 120))})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -147,31 +132,15 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
           }
         }
       }
-      ctx.globalAlpha = 1;
 
-      // Draw particles
       particles.forEach((p) => {
-        const palette = ["rgba(125,200,255,0.85)", "rgba(255,150,70,0.7)", "rgba(110,230,160,0.7)", "rgba(255,255,255,0.6)"];
-        ctx.fillStyle = palette[Math.floor(p.hue * palette.length)];
-        ctx.strokeStyle = ctx.fillStyle;
-        if (p.shape === 0) {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (p.shape === 1) {
-          ctx.lineWidth = 1;
-          ctx.strokeRect(p.x - p.r * 2, p.y - p.r * 2, p.r * 4, p.r * 4);
-        } else {
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(Math.PI / 4);
-          ctx.lineWidth = 1;
-          ctx.strokeRect(-p.r * 2, -p.r * 2, p.r * 4, p.r * 4);
-          ctx.restore();
-        }
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
       });
 
-      // Logo formation — particles gathering into the icon shape.
+      // Logo formation
       const lp = logoParticlesRef.current;
       if (lp.length) {
         const progress = Math.min(1, Math.max(0, (scrollRef.current - 0.02) * 1.4));
@@ -183,10 +152,8 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
         const scatterY = h * 0.5;
         const centerX = w / 2;
         const centerY = h / 2;
-        const pulse = 0.7 + 0.3 * Math.sin(t * 2.5);
 
         ctx.save();
-        ctx.shadowBlur = 4 + 3 * pulse;
         const ease = (x: number) => 1 - Math.pow(1 - x, 3);
         for (let i = 0; i < lp.length; i++) {
           const p = lp[i];
@@ -196,17 +163,15 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
           const startY = centerY + p.sy * scatterY;
           const endX = cx + p.tx * scale;
           const endY = cy + p.ty * scale;
-          // soft drift while still scattered
           const drift = (1 - k) * 6;
           const ox = Math.sin(t * 1.5 + i) * drift;
           const oy = Math.cos(t * 1.5 + i * 0.7) * drift;
           const x = startX + (endX - startX) * k + ox;
           const y = startY + (endY - startY) * k + oy;
-          ctx.globalAlpha = 0.25 + 0.7 * k;
+          ctx.globalAlpha = 0.18 + 0.55 * k;
           ctx.fillStyle = p.c;
-          ctx.shadowColor = p.c;
           ctx.beginPath();
-          ctx.arc(x, y, 1.3 + 0.6 * k, 0, Math.PI * 2);
+          ctx.arc(x, y, 1.2 + 0.5 * k, 0, Math.PI * 2);
           ctx.fill();
         }
         ctx.restore();
@@ -227,7 +192,7 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10 h-full w-full"
-      style={{ background: "#080808" }}
+      style={{ background: "#ffffff" }}
       aria-hidden
     />
   );

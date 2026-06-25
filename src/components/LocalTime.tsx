@@ -19,15 +19,15 @@ export default function LocalTime() {
     : "--:--:--";
   return (
     <div>
-      <div className="mb-3 flex items-center gap-2 text-[10px] tracking-[0.4em] text-green">
+      <div className="mb-3 flex items-center gap-2 text-[11px] font-medium tracking-[0.15em] text-green">
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-70" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
         </span>
         OPEN NOW
       </div>
-      <div className="font-display text-5xl tabular-nums text-ink md:text-6xl">{fmt}</div>
-      <div className="mt-2 text-xs uppercase tracking-[0.3em] text-ink-dim">Islamabad · PKT</div>
+      <div className="font-display text-5xl font-semibold tabular-nums text-ink md:text-6xl">{fmt}</div>
+      <div className="mt-2 text-xs uppercase tracking-[0.2em] text-ink-dim">Islamabad · PKT</div>
       <div className="mt-6 text-sm text-ink-dim">24 hours a day, every day of the week.</div>
     </div>
   );
