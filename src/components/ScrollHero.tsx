@@ -48,9 +48,9 @@ export default function ScrollHero() {
 
   // Logo transform: starts centered, ends top-left small
   const logoSize = lerp(180, 40, logoPhase);
-  // Move from centered to top-left of nav (~ 64px from top, 40px from left)
-  const logoTranslateY = lerp(0, -(window.innerHeight / 2 - 56), logoPhase);
-  const logoTranslateX = lerp(0, -(window.innerWidth / 2 - 80) + (typeof window !== "undefined" && window.innerWidth >= 768 ? 0 : 20), logoPhase);
+  const logoTranslateY = lerp(0, -(vp.h / 2 - 56), logoPhase);
+  const logoTranslateX = lerp(0, -(vp.w / 2 - 80), logoPhase);
+
 
   const nameOpacity = 1 - namePhase;
   const nameScale = 1 - namePhase * 0.25;
