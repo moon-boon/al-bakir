@@ -6,7 +6,9 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 export default function ScrollHero() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [p, setP] = useState(0); // 0..1 scroll progress through hero
+  const [p, setP] = useState(0);
+  const [vp, setVp] = useState({ w: 1280, h: 800 });
+
 
   useEffect(() => {
     let raf = 0;
@@ -24,6 +26,8 @@ export default function ScrollHero() {
       const total = el.offsetHeight - window.innerHeight;
       const scrolled = clamp(-rect.top / Math.max(1, total));
       target = scrolled;
+      setVp({ w: window.innerWidth, h: window.innerHeight });
+
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(tick);
     };
