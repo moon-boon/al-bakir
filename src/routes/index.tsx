@@ -6,7 +6,9 @@ import FeaturedProjects from "@/components/FeaturedProjects";
 import MagneticButton from "@/components/MagneticButton";
 import Marquee from "@/components/Marquee";
 import Counter from "@/components/Counter";
+import ScrollHero from "@/components/ScrollHero";
 import logoSrc from "@/assets/logo.png";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
