@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import logoSrc from "@/assets/logo.png";
+import logoAsset from "@/assets/logo-mark.png.asset.json";
+const logoSrc = logoAsset.url;
+
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;

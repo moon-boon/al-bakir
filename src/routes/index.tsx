@@ -7,7 +7,10 @@ import MagneticButton from "@/components/MagneticButton";
 import Marquee from "@/components/Marquee";
 import Counter from "@/components/Counter";
 import ScrollHero from "@/components/ScrollHero";
+import logoMarkAsset from "@/assets/logo-mark.png.asset.json";
 import logoSrc from "@/assets/logo.png";
+const logoMarkSrc = logoMarkAsset.url;
+
 
 
 export const Route = createFileRoute("/")({
