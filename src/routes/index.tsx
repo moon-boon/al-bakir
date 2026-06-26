@@ -415,7 +415,7 @@ function Index() {
       <BackgroundCanvas logoSrc={logoSrc} />
       <Nav />
       <main>
-        <Hero />
+        <ScrollHero />
         <Bento />
         <FeaturedProjects />
         <Stats />
