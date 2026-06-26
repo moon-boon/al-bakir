@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import logoSrc from "@/assets/logo.png";
+import logoAsset from "@/assets/logo-mark.png.asset.json";
+const logoSrc = logoAsset.url;
+
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -129,11 +131,11 @@ export default function ScrollHero() {
         {/* Center stage */}
         <div className="relative z-10 flex h-full w-full items-center justify-center px-6">
           <div className="relative flex flex-col items-center text-center">
-            {/* Logo */}
+            {/* Logo (mark only, transparent) */}
             <div
               style={{
                 transform: `translate3d(${logoTranslateX}px, ${logoTranslateY}px, 0)`,
-                width: `${logoSize}px`,
+                width: `${logoSize * 1.55}px`,
                 height: `${logoSize}px`,
                 transition: "width 0.05s linear, height 0.05s linear",
                 willChange: "transform, width, height",
@@ -142,25 +144,28 @@ export default function ScrollHero() {
             >
               <div
                 aria-hidden
-                className="absolute inset-0 rounded-full"
+                className="absolute inset-0"
                 style={{
                   background:
-                    "radial-gradient(circle, rgba(255,200,120,0.45) 0%, rgba(120,80,220,0.25) 50%, transparent 70%)",
-                  filter: "blur(20px)",
+                    "radial-gradient(ellipse, rgba(255,200,120,0.35) 0%, rgba(120,80,220,0.18) 45%, transparent 70%)",
+                  filter: "blur(28px)",
                   opacity: 1 - logoPhase * 0.7,
                 }}
               />
               <img
                 src={logoSrc}
                 alt="Al Bakir"
-                className="relative h-full w-full object-contain drop-shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
-                style={{ animation: "heroIn 1s 0.1s ease-out both" }}
+                className="relative h-full w-full object-contain"
+                style={{
+                  animation: "heroIn 1s 0.1s ease-out both",
+                  filter: "drop-shadow(0 6px 24px rgba(0,0,0,0.45)) brightness(1.05)",
+                }}
               />
             </div>
 
             {/* Brand name */}
             <h1
-              className="mt-6 font-display font-semibold tracking-[0.18em] text-white"
+              className="mt-8 font-display font-semibold tracking-[0.18em] text-white"
               style={{
                 fontSize: "clamp(2.5rem, 8vw, 6.5rem)",
                 opacity: nameOpacity,
@@ -172,24 +177,25 @@ export default function ScrollHero() {
             >
               AL BAKIR
             </h1>
-
-            {/* Slogan */}
-            <p
-              className="pointer-events-none absolute left-1/2 top-1/2 w-[90vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 font-display italic text-white/90"
-              style={{
-                fontSize: "clamp(1.6rem, 4.5vw, 3.5rem)",
-                fontWeight: 300,
-                letterSpacing: "0.01em",
-                opacity: sloganOpacity,
-                transform: `translate(-50%, calc(-50% + ${sloganTranslate}px))`,
-                textShadow: "0 6px 40px rgba(0,0,0,0.5)",
-                willChange: "transform, opacity",
-              }}
-            >
-              Where Dreams Become True
-            </p>
           </div>
+
+          {/* Slogan — pinned to sticky stage center, independent of stack */}
+          <p
+            className="pointer-events-none absolute left-1/2 top-1/2 w-[92vw] max-w-4xl px-6 text-center font-display italic text-white/95"
+            style={{
+              fontSize: "clamp(1.8rem, 5vw, 4rem)",
+              fontWeight: 300,
+              letterSpacing: "0.01em",
+              opacity: sloganOpacity,
+              transform: `translate(-50%, calc(-50% + ${sloganTranslate}px))`,
+              textShadow: "0 8px 50px rgba(0,0,0,0.55), 0 2px 12px rgba(0,0,0,0.35)",
+              willChange: "transform, opacity",
+            }}
+          >
+            Where Dreams Become True
+          </p>
         </div>
+
 
         {/* Scroll hint */}
         <div
