@@ -67,7 +67,7 @@ function Nav() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a href="#top" className="flex items-center gap-3">
-          <img src={logoSrc} alt="Al Bakir" className="h-9 w-9 object-contain" />
+          <img src={logoMarkSrc} alt="Al Bakir" className="h-9 w-14 object-contain" />
           <div className="leading-tight">
             <div className="font-display text-base font-semibold tracking-tight text-ink">Al Bakir</div>
             <div className="text-[10px] tracking-[0.2em] text-ink-soft">PVT · LTD</div>
@@ -371,7 +371,7 @@ function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-3">
-            <img src={logoSrc} alt="" className="h-10 w-10 object-contain" />
+            <img src={logoMarkSrc} alt="" className="h-10 w-16 object-contain" />
             <div>
               <div className="font-display text-base font-semibold text-ink">Al Bakir</div>
               <div className="text-[10px] tracking-[0.2em] text-ink-soft">PVT · LTD</div>
