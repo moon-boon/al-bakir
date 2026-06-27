@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import LocalTime from "./LocalTime";
 import Marquee from "./Marquee";
 
