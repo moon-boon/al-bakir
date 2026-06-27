@@ -181,7 +181,7 @@ export default function ScrollHero() {
 
           {/* Slogan — pinned to sticky stage center, independent of stack */}
           <p
-            className="pointer-events-none absolute left-1/2 top-1/2 w-[92vw] max-w-4xl px-6 text-center font-display italic text-white/95"
+            className="pointer-events-none absolute left-1/2 top-1/2 z-20 w-[92vw] max-w-4xl px-6 text-center font-display italic text-white/95"
             style={{
               fontSize: "clamp(1.8rem, 5vw, 4rem)",
               fontWeight: 300,
