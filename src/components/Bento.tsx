@@ -31,6 +31,7 @@ const services = [
   },
   {
     title: "Real Estate",
+    slug: "real-estate",
     desc: "Curated property opportunities across B-17 Islamabad and surrounding sectors.",
     accentClass: "text-green",
     underline: "bg-green",
