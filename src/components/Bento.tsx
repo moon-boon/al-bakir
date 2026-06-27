@@ -18,6 +18,7 @@ const services = [
   },
   {
     title: "Construction",
+    slug: "construction",
     desc: "End to end build delivery with disciplined timelines and material integrity.",
     accentClass: "text-orange",
     underline: "bg-orange",
