@@ -44,9 +44,9 @@ export default function ScrollHero() {
   }, []);
 
   // Phases
-  const namePhase = clamp((p - 0.6) / 0.25); // name fades out as slogan fades in
+  const namePhase = clamp((p - 0.58) / 0.12); // name fades out quickly before slogan
   const logoPhase = clamp((p - 0.18) / 0.42); // logo shrinks to top
-  const sloganPhase = clamp((p - 0.6) / 0.35); // slogan fades in
+  const sloganPhase = clamp((p - 0.7) / 0.25); // slogan fades in after name is gone
 
   // Logo transform: starts centered, ends top-left small
   const logoSize = lerp(180, 40, logoPhase);
