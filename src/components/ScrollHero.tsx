@@ -170,7 +170,7 @@ export default function ScrollHero() {
               style={{
                 fontSize: "clamp(2.5rem, 8vw, 6.5rem)",
                 opacity: nameOpacity,
-                transform: `translateY(${nameTranslate}px) scale(${nameScale})`,
+                transform: `translate3d(${nameTranslateX}px, ${nameTranslateY}px, 0) scale(${nameScale})`,
                 textShadow: "0 4px 30px rgba(0,0,0,0.4)",
                 animation: "heroIn 1s 0.3s ease-out both",
                 willChange: "transform, opacity",
