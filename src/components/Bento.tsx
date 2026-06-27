@@ -5,8 +5,10 @@ import Marquee from "./Marquee";
 const services = [
   {
     title: "Architecture & Design",
+    slug: "architecture-design",
     desc: "Bespoke residential and commercial design rooted in context, climate and craft.",
     accentClass: "text-blue-bright",
+    underline: "bg-blue",
     underline: "bg-blue",
     icon: (
       <svg viewBox="0 0 64 64" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="1.4">
