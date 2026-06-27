@@ -9,7 +9,6 @@ const services = [
     desc: "Bespoke residential and commercial design rooted in context, climate and craft.",
     accentClass: "text-blue-bright",
     underline: "bg-blue",
-    underline: "bg-blue",
     icon: (
       <svg viewBox="0 0 64 64" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="1.4">
         <circle cx="32" cy="20" r="4" />
