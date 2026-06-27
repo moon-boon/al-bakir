@@ -44,9 +44,9 @@ export default function ScrollHero() {
   }, []);
 
   // Phases
-  const namePhase = clamp((p - 0.6) / 0.25); // name fades out as slogan fades in
+  const namePhase = clamp((p - 0.58) / 0.12); // name fades out quickly before slogan
   const logoPhase = clamp((p - 0.18) / 0.42); // logo shrinks to top
-  const sloganPhase = clamp((p - 0.6) / 0.35); // slogan fades in
+  const sloganPhase = clamp((p - 0.7) / 0.25); // slogan fades in after name is gone
 
   // Logo transform: starts centered, ends top-left small
   const logoSize = lerp(180, 40, logoPhase);
@@ -181,7 +181,7 @@ export default function ScrollHero() {
 
           {/* Slogan — pinned to sticky stage center, independent of stack */}
           <p
-            className="pointer-events-none absolute left-1/2 top-1/2 w-[92vw] max-w-4xl px-6 text-center font-display italic text-white/95"
+            className="pointer-events-none absolute left-1/2 top-1/2 z-20 w-[92vw] max-w-4xl px-6 text-center font-display italic text-white/95"
             style={{
               fontSize: "clamp(1.8rem, 5vw, 4rem)",
               fontWeight: 300,
