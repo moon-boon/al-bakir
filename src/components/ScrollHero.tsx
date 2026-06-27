@@ -44,7 +44,7 @@ export default function ScrollHero() {
   }, []);
 
   // Phases
-  const namePhase = clamp((p - 0.7) / 0.25); // name moves to top as slogan appears
+  const namePhase = clamp((p - 0.55) / 0.15); // name reaches top exactly when slogan begins
   const logoPhase = clamp((p - 0.18) / 0.42); // logo shrinks to top
   const sloganPhase = clamp((p - 0.7) / 0.25); // slogan fades in
 
