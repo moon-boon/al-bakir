@@ -1,9 +1,11 @@
+import { Link } from "@tanstack/react-router";
 import LocalTime from "./LocalTime";
 import Marquee from "./Marquee";
 
 const services = [
   {
     title: "Architecture & Design",
+    slug: "architecture-design",
     desc: "Bespoke residential and commercial design rooted in context, climate and craft.",
     accentClass: "text-blue-bright",
     underline: "bg-blue",
@@ -16,6 +18,7 @@ const services = [
   },
   {
     title: "Construction",
+    slug: "construction",
     desc: "End to end build delivery with disciplined timelines and material integrity.",
     accentClass: "text-orange",
     underline: "bg-orange",
@@ -28,6 +31,7 @@ const services = [
   },
   {
     title: "Real Estate",
+    slug: "real-estate",
     desc: "Curated property opportunities across B-17 Islamabad and surrounding sectors.",
     accentClass: "text-green",
     underline: "bg-green",
@@ -92,9 +96,11 @@ export default function Bento() {
 
           {/* Service tiles */}
           {services.map((s, i) => (
-            <article
+            <Link
               key={s.title}
-              className="fade-up surface-card group relative md:col-span-4 md:row-span-2"
+              to="/gallery/$slug"
+              params={{ slug: s.slug }}
+              className="fade-up surface-card group relative block cursor-pointer transition hover:-translate-y-1 hover:shadow-lg md:col-span-4 md:row-span-2"
               style={{ transitionDelay: `${i * 80}ms` }}
             >
               <div className="flex h-full flex-col justify-between p-8">
@@ -103,11 +109,12 @@ export default function Bento() {
                 </div>
                 <div>
                   <h3 className="font-display text-2xl font-semibold text-ink">{s.title}</h3>
-                  <div className={`my-3 h-0.5 w-8 ${s.underline}`} />
+                  <div className={`my-3 h-0.5 w-8 ${s.underline} transition-all duration-500 group-hover:w-16`} />
                   <p className="mt-2 text-sm leading-relaxed text-ink-dim">{s.desc}</p>
+                  <div className="mt-4 text-xs uppercase tracking-[0.2em] text-ink-dim opacity-0 transition group-hover:opacity-100">View gallery →</div>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
 
           {/* Capabilities marquee */}
