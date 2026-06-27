@@ -44,19 +44,20 @@ export default function ScrollHero() {
   }, []);
 
   // Phases
-  const namePhase = clamp((p - 0.58) / 0.12); // name fades out quickly before slogan
+  const namePhase = clamp((p - 0.7) / 0.25); // name moves to top as slogan appears
   const logoPhase = clamp((p - 0.18) / 0.42); // logo shrinks to top
-  const sloganPhase = clamp((p - 0.7) / 0.25); // slogan fades in after name is gone
+  const sloganPhase = clamp((p - 0.7) / 0.25); // slogan fades in
 
   // Logo transform: starts centered, ends top-left small
   const logoSize = lerp(180, 40, logoPhase);
   const logoTranslateY = lerp(0, -(vp.h / 2 - 56), logoPhase);
   const logoTranslateX = lerp(0, -(vp.w / 2 - 80), logoPhase);
 
-
-  const nameOpacity = 1 - namePhase;
-  const nameScale = 1 - namePhase * 0.25;
-  const nameTranslate = namePhase * 30;
+  // Name moves to top and shrinks instead of fading out
+  const nameOpacity = 1 - namePhase * 0.4;
+  const nameScale = 1 - namePhase * 0.65;
+  const nameTranslateY = namePhase * -(vp.h / 2 - 90);
+  const nameTranslateX = 0;
 
   const sloganOpacity = sloganPhase;
   const sloganTranslate = (1 - sloganPhase) * 40;
@@ -169,7 +170,7 @@ export default function ScrollHero() {
               style={{
                 fontSize: "clamp(2.5rem, 8vw, 6.5rem)",
                 opacity: nameOpacity,
-                transform: `translateY(${nameTranslate}px) scale(${nameScale})`,
+                transform: `translate3d(${nameTranslateX}px, ${nameTranslateY}px, 0) scale(${nameScale})`,
                 textShadow: "0 4px 30px rgba(0,0,0,0.4)",
                 animation: "heroIn 1s 0.3s ease-out both",
                 willChange: "transform, opacity",
