@@ -89,19 +89,19 @@ function Nav() {
           onClick={() => setOpen((v) => !v)}
           className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
         >
-          <span className={`block h-px w-6 bg-ink transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block h-px w-6 bg-ink transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`block h-px w-6 bg-ink transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </div>
       {open && (
-        <div className="fixed inset-0 top-0 z-40 flex flex-col items-center justify-center gap-8 bg-bg/95 backdrop-blur-xl md:hidden">
+        <div className="fixed inset-0 top-0 z-40 flex flex-col items-center justify-center gap-8 bg-black/95 backdrop-blur-xl md:hidden">
           {links.map((l, i) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="font-display text-4xl font-semibold text-ink"
+              className="font-display text-4xl font-semibold text-white"
               style={{ animation: `fadeUp 0.4s ${i * 0.08}s both` }}
             >
               {l.label}
