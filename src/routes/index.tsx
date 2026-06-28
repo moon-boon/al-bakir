@@ -45,13 +45,7 @@ function useReveal() {
 }
 
 function Nav() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
   const links = [
     { href: "#services", label: "Services" },
     { href: "#projects", label: "Projects" },
@@ -60,26 +54,23 @@ function Nav() {
   ];
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? "border-b border-black/5" : ""
-      }`}
-      style={{ background: scrolled ? "rgba(255,255,255,0.85)" : "transparent", backdropFilter: scrolled ? "saturate(180%) blur(20px)" : "none" }}
+      className="fixed inset-x-0 top-0 z-50 bg-black/90 text-white backdrop-blur-md transition-all duration-300"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a href="#top" className="flex items-center gap-3">
           <img src={logoMarkSrc} alt="Al Bakir" className="h-9 w-14 object-contain" />
           <div className="leading-tight">
-            <div className="font-display text-base font-semibold tracking-tight text-ink">Al Bakir</div>
-            <div className="text-[10px] tracking-[0.2em] text-ink-soft">PVT · LTD</div>
+            <div className="font-display text-base font-semibold tracking-tight text-white">Al Bakir</div>
+            <div className="text-[10px] tracking-[0.2em] text-white/70">PVT · LTD</div>
           </div>
         </a>
         <nav className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm font-medium text-ink-dim transition-colors hover:text-ink">
+            <a key={l.href} href={l.href} className="text-sm font-medium text-white/80 transition-colors hover:text-white">
               {l.label}
             </a>
           ))}
-          <span className="ml-2 flex items-center gap-2 rounded-full border border-green/30 bg-green/5 px-3 py-1 text-[11px] font-medium text-green">
+          <span className="ml-2 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-70" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green" />
@@ -92,19 +83,19 @@ function Nav() {
           onClick={() => setOpen((v) => !v)}
           className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
         >
-          <span className={`block h-px w-6 bg-ink transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block h-px w-6 bg-ink transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`block h-px w-6 bg-ink transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </div>
       {open && (
-        <div className="fixed inset-0 top-0 z-40 flex flex-col items-center justify-center gap-8 bg-bg/95 backdrop-blur-xl md:hidden">
+        <div className="fixed inset-0 top-0 z-40 flex flex-col items-center justify-center gap-8 bg-black/95 backdrop-blur-xl md:hidden">
           {links.map((l, i) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="font-display text-4xl font-semibold text-ink"
+              className="font-display text-4xl font-semibold text-white"
               style={{ animation: `fadeUp 0.4s ${i * 0.08}s both` }}
             >
               {l.label}
