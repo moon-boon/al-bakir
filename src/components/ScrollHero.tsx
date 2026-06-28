@@ -113,22 +113,37 @@ export default function ScrollHero() {
           ))}
         </div>
 
-        {/* 3D Buildings — left */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-0 top-1/2 hidden -translate-y-1/2 md:block"
-          style={{ perspective: "1200px", transform: `translateY(calc(-50% + ${buildingY}px))` }}
-        >
-          <BuildingCluster rotate={rotL} side="left" />
+        {/* Smooth animated aurora blobs */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div
+            className="absolute -left-[20%] top-[10%] h-[60vmax] w-[60vmax] rounded-full"
+            style={{
+              background: "radial-gradient(circle, rgba(99,52,201,0.55), transparent 65%)",
+              filter: "blur(80px)",
+              animation: "blobA 22s ease-in-out infinite alternate",
+              transform: `translate3d(0, ${p * -80}px, 0)`,
+            }}
+          />
+          <div
+            className="absolute -right-[15%] top-[30%] h-[55vmax] w-[55vmax] rounded-full"
+            style={{
+              background: "radial-gradient(circle, rgba(255,159,10,0.40), transparent 65%)",
+              filter: "blur(90px)",
+              animation: "blobB 26s ease-in-out infinite alternate",
+              transform: `translate3d(0, ${p * 60}px, 0)`,
+            }}
+          />
+          <div
+            className="absolute left-[25%] bottom-[-20%] h-[55vmax] w-[55vmax] rounded-full"
+            style={{
+              background: "radial-gradient(circle, rgba(10,132,255,0.35), transparent 65%)",
+              filter: "blur(100px)",
+              animation: "blobC 30s ease-in-out infinite alternate",
+              transform: `translate3d(0, ${p * -40}px, 0)`,
+            }}
+          />
         </div>
-        {/* 3D Buildings — right */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute right-0 top-1/2 hidden -translate-y-1/2 md:block"
-          style={{ perspective: "1200px", transform: `translateY(calc(-50% + ${buildingY}px))` }}
-        >
-          <BuildingCluster rotate={rotR} side="right" />
-        </div>
+
 
         {/* Center stage */}
         <div className="relative z-10 flex h-full w-full items-center justify-center px-6">
