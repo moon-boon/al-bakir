@@ -63,10 +63,8 @@ export default function ScrollHero() {
   const sloganOpacity = sloganPhase;
   const sloganTranslate = (1 - sloganPhase) * 40;
 
-  // Buildings rotate with scroll
-  const rotL = p * 35; // degrees
-  const rotR = -p * 35;
-  const buildingY = p * -60;
+
+
 
   return (
     <div ref={wrapRef} className="relative h-[220vh] w-full" id="top">
