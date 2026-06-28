@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import logoAsset from "@/assets/logo-mark.png.asset.json";
-import houseLeftAsset from "@/assets/house-left.png.asset.json";
-import houseRightAsset from "@/assets/house-right.png.asset.json";
 const logoSrc = logoAsset.url;
-const houseLeftSrc = houseLeftAsset.url;
-const houseRightSrc = houseRightAsset.url;
+
 
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -66,10 +63,8 @@ export default function ScrollHero() {
   const sloganOpacity = sloganPhase;
   const sloganTranslate = (1 - sloganPhase) * 40;
 
-  // Buildings rotate with scroll
-  const rotL = p * 35; // degrees
-  const rotR = -p * 35;
-  const buildingY = p * -60;
+
+
 
   return (
     <div ref={wrapRef} className="relative h-[220vh] w-full" id="top">
@@ -116,22 +111,37 @@ export default function ScrollHero() {
           ))}
         </div>
 
-        {/* 3D Buildings — left */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-0 top-1/2 hidden -translate-y-1/2 md:block"
-          style={{ perspective: "1200px", transform: `translateY(calc(-50% + ${buildingY}px))` }}
-        >
-          <BuildingCluster rotate={rotL} side="left" />
+        {/* Smooth animated aurora blobs */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div
+            className="absolute -left-[20%] top-[10%] h-[60vmax] w-[60vmax] rounded-full"
+            style={{
+              background: "radial-gradient(circle, rgba(99,52,201,0.55), transparent 65%)",
+              filter: "blur(80px)",
+              animation: "blobA 22s ease-in-out infinite alternate",
+              transform: `translate3d(0, ${p * -80}px, 0)`,
+            }}
+          />
+          <div
+            className="absolute -right-[15%] top-[30%] h-[55vmax] w-[55vmax] rounded-full"
+            style={{
+              background: "radial-gradient(circle, rgba(255,159,10,0.40), transparent 65%)",
+              filter: "blur(90px)",
+              animation: "blobB 26s ease-in-out infinite alternate",
+              transform: `translate3d(0, ${p * 60}px, 0)`,
+            }}
+          />
+          <div
+            className="absolute left-[25%] bottom-[-20%] h-[55vmax] w-[55vmax] rounded-full"
+            style={{
+              background: "radial-gradient(circle, rgba(10,132,255,0.35), transparent 65%)",
+              filter: "blur(100px)",
+              animation: "blobC 30s ease-in-out infinite alternate",
+              transform: `translate3d(0, ${p * -40}px, 0)`,
+            }}
+          />
         </div>
-        {/* 3D Buildings — right */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute right-0 top-1/2 hidden -translate-y-1/2 md:block"
-          style={{ perspective: "1200px", transform: `translateY(calc(-50% + ${buildingY}px))` }}
-        >
-          <BuildingCluster rotate={rotR} side="right" />
-        </div>
+
 
         {/* Center stage */}
         <div className="relative z-10 flex h-full w-full items-center justify-center px-6">
@@ -224,30 +234,23 @@ export default function ScrollHero() {
           from { transform: translateY(0); }
           to { transform: translateY(-30px); }
         }
+        @keyframes blobA {
+          0% { transform: translate3d(0,0,0) scale(1); }
+          100% { transform: translate3d(8vw,6vh,0) scale(1.15); }
+        }
+        @keyframes blobB {
+          0% { transform: translate3d(0,0,0) scale(1.05); }
+          100% { transform: translate3d(-6vw,-4vh,0) scale(0.95); }
+        }
+        @keyframes blobC {
+          0% { transform: translate3d(0,0,0) scale(0.95); }
+          100% { transform: translate3d(-5vw,-8vh,0) scale(1.2); }
+        }
+
       `}</style>
     </div>
   );
 }
 
-function BuildingCluster({ rotate, side }: { rotate: number; side: "left" | "right" }) {
-  const src = side === "left" ? houseLeftSrc : houseRightSrc;
-  return (
-    <div
-      className="relative h-[80vh] w-[36vw]"
-      style={{
-        transform: `perspective(1400px) rotateY(${rotate}deg)`,
-        transformStyle: "preserve-3d",
-        transition: "transform 0.15s linear",
-      }}
-    >
-      <img
-        src={src}
-        alt=""
-        className="absolute inset-0 h-full w-full object-contain"
-        style={{
-          filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.55)) drop-shadow(0 0 40px rgba(99,52,201,0.25))",
-        }}
-      />
-    </div>
-  );
-}
+
+
