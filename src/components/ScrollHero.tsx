@@ -230,40 +230,29 @@ export default function ScrollHero() {
 }
 
 function BuildingCluster({ rotate, side }: { rotate: number; side: "left" | "right" }) {
-  const baseStyle: React.CSSProperties = {
-    transform: `rotateY(${rotate}deg)`,
-    transformStyle: "preserve-3d",
-    transition: "transform 0.15s linear",
-  };
+  const src = side === "left" ? houseLeftSrc : houseRightSrc;
   return (
-    <div className="relative h-[80vh] w-[28vw]" style={baseStyle}>
-      {/* Tower 1 */}
-      <Building
-        h="60%"
-        w="42%"
-        x={side === "left" ? "10%" : "48%"}
-        delay={0}
-      />
-      {/* Tower 2 (taller) */}
-      <Building
-        h="82%"
-        w="34%"
-        x={side === "left" ? "50%" : "16%"}
-        delay={0.2}
-        accent
-      />
-      {/* Tower 3 (short) */}
-      <Building
-        h="40%"
-        w="22%"
-        x={side === "left" ? "82%" : "0%"}
-        delay={0.4}
+    <div
+      className="relative h-[80vh] w-[36vw]"
+      style={{
+        transform: `perspective(1400px) rotateY(${rotate}deg)`,
+        transformStyle: "preserve-3d",
+        transition: "transform 0.15s linear",
+      }}
+    >
+      <img
+        src={src}
+        alt=""
+        className="absolute inset-0 h-full w-full object-contain"
+        style={{
+          filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.55)) drop-shadow(0 0 40px rgba(99,52,201,0.25))",
+        }}
       />
     </div>
   );
 }
 
-function Building({
+function _UnusedBuilding({
   h,
   w,
   x,
