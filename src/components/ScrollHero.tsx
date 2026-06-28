@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import logoAsset from "@/assets/logo-mark.png.asset.json";
+import houseLeftAsset from "@/assets/house-left.png.asset.json";
+import houseRightAsset from "@/assets/house-right.png.asset.json";
 const logoSrc = logoAsset.url;
+const houseLeftSrc = houseLeftAsset.url;
+const houseRightSrc = houseRightAsset.url;
 
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -226,93 +230,23 @@ export default function ScrollHero() {
 }
 
 function BuildingCluster({ rotate, side }: { rotate: number; side: "left" | "right" }) {
-  const baseStyle: React.CSSProperties = {
-    transform: `rotateY(${rotate}deg)`,
-    transformStyle: "preserve-3d",
-    transition: "transform 0.15s linear",
-  };
-  return (
-    <div className="relative h-[80vh] w-[28vw]" style={baseStyle}>
-      {/* Tower 1 */}
-      <Building
-        h="60%"
-        w="42%"
-        x={side === "left" ? "10%" : "48%"}
-        delay={0}
-      />
-      {/* Tower 2 (taller) */}
-      <Building
-        h="82%"
-        w="34%"
-        x={side === "left" ? "50%" : "16%"}
-        delay={0.2}
-        accent
-      />
-      {/* Tower 3 (short) */}
-      <Building
-        h="40%"
-        w="22%"
-        x={side === "left" ? "82%" : "0%"}
-        delay={0.4}
-      />
-    </div>
-  );
-}
-
-function Building({
-  h,
-  w,
-  x,
-  delay,
-  accent,
-}: {
-  h: string;
-  w: string;
-  x: string;
-  delay: number;
-  accent?: boolean;
-}) {
+  const src = side === "left" ? houseLeftSrc : houseRightSrc;
   return (
     <div
-      className="absolute bottom-0"
+      className="relative h-[80vh] w-[36vw]"
       style={{
-        height: h,
-        width: w,
-        left: x,
-        background:
-          "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 60%, rgba(0,0,0,0.2) 100%)",
-        border: "1px solid rgba(255,255,255,0.22)",
-        boxShadow: accent
-          ? "0 0 60px rgba(255,159,10,0.25), inset 0 0 30px rgba(99,52,201,0.2)"
-          : "0 0 40px rgba(120,80,220,0.15)",
-        animation: `heroIn 1.2s ${0.4 + delay}s ease-out both`,
-        backdropFilter: "blur(2px)",
+        transform: `perspective(1400px) rotateY(${rotate}deg)`,
+        transformStyle: "preserve-3d",
+        transition: "transform 0.15s linear",
       }}
     >
-      {/* Window grid */}
-      <div
-        className="absolute inset-0 opacity-70"
+      <img
+        src={src}
+        alt=""
+        className="absolute inset-0 h-full w-full object-contain"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px)",
-          backgroundSize: "14px 22px",
+          filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.55)) drop-shadow(0 0 40px rgba(99,52,201,0.25))",
         }}
-      />
-      {/* Lit windows */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: accent
-            ? "radial-gradient(circle at 30% 40%, rgba(255,200,120,0.7) 1px, transparent 2px), radial-gradient(circle at 70% 65%, rgba(120,180,255,0.6) 1px, transparent 2px)"
-            : "radial-gradient(circle at 50% 50%, rgba(255,200,120,0.5) 1px, transparent 2px)",
-          backgroundSize: "28px 44px",
-          mixBlendMode: "screen",
-        }}
-      />
-      {/* Top edge */}
-      <div
-        className="absolute -top-1 left-0 right-0 h-1"
-        style={{ background: accent ? "rgba(255,159,10,0.6)" : "rgba(255,255,255,0.3)" }}
       />
     </div>
   );
