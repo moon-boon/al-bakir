@@ -234,6 +234,19 @@ export default function ScrollHero() {
           from { transform: translateY(0); }
           to { transform: translateY(-30px); }
         }
+        @keyframes blobA {
+          0% { transform: translate3d(0,0,0) scale(1); }
+          100% { transform: translate3d(8vw,6vh,0) scale(1.15); }
+        }
+        @keyframes blobB {
+          0% { transform: translate3d(0,0,0) scale(1.05); }
+          100% { transform: translate3d(-6vw,-4vh,0) scale(0.95); }
+        }
+        @keyframes blobC {
+          0% { transform: translate3d(0,0,0) scale(0.95); }
+          100% { transform: translate3d(-5vw,-8vh,0) scale(1.2); }
+        }
+
       `}</style>
     </div>
   );
