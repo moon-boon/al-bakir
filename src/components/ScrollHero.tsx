@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import logoAsset from "@/assets/logo-mark.png.asset.json";
+import houseLeftAsset from "@/assets/house-left.png.asset.json";
+import houseRightAsset from "@/assets/house-right.png.asset.json";
 const logoSrc = logoAsset.url;
+const houseLeftSrc = houseLeftAsset.url;
+const houseRightSrc = houseRightAsset.url;
 
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
