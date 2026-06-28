@@ -241,25 +241,5 @@ export default function ScrollHero() {
   );
 }
 
-function BuildingCluster({ rotate, side }: { rotate: number; side: "left" | "right" }) {
-  const src = side === "left" ? houseLeftSrc : houseRightSrc;
-  return (
-    <div
-      className="relative h-[80vh] w-[36vw]"
-      style={{
-        transform: `perspective(1400px) rotateY(${rotate}deg)`,
-        transformStyle: "preserve-3d",
-        transition: "transform 0.15s linear",
-      }}
-    >
-      <img
-        src={src}
-        alt=""
-        className="absolute inset-0 h-full w-full object-contain"
-        style={{
-          filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.55)) drop-shadow(0 0 40px rgba(99,52,201,0.25))",
-        }}
-      />
-    </div>
-  );
-}
+
+
