@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import BackgroundCanvas from "@/components/BackgroundCanvas";
 import Bento from "@/components/Bento";
-import FeaturedProjects from "@/components/FeaturedProjects";
 import MagneticButton from "@/components/MagneticButton";
 import Marquee from "@/components/Marquee";
 import Counter from "@/components/Counter";
@@ -411,7 +410,6 @@ function Index() {
       <main>
         <ScrollHero />
         <Bento />
-        <FeaturedProjects />
         <Stats />
         <About />
         <RatingMarquee />
