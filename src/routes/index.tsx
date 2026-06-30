@@ -74,7 +74,7 @@ function Nav() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-70" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green" />
             </span>
-            Open 24/7
+            9 AM – 8 PM
           </span>
         </nav>
         <button
@@ -132,7 +132,7 @@ function Hero() {
           {[
             { num: 4.8, dec: 1, label: "Google Rating", suffix: "" },
             { num: 27, dec: 0, label: "Reviews", suffix: "" },
-            { num: 24, dec: 0, label: "Hour Service", suffix: "/7" },
+            { num: 11, dec: 0, label: "Daily Hours", suffix: "" },
           ].map((s) => (
             <div key={s.label} className="flex flex-col items-center gap-1 px-2 sm:flex-row sm:gap-3">
               <span className="font-display text-3xl font-semibold leading-none text-ink tabular-nums">
@@ -202,7 +202,7 @@ function About() {
           </p>
           <p className="mt-6 text-base leading-relaxed text-ink-dim">
             Our work is shaped by Pakistani context, modern construction discipline and a refusal to
-            compromise on detail. Open 24 hours, every day of the week.
+            compromise on detail. Open Monday–Thursday and Saturday–Sunday, 9 AM to 8 PM. Friday closed.
           </p>
 
           <div className="mt-10 surface-card-elev p-6">
@@ -217,7 +217,7 @@ function About() {
 }
 
 function RatingMarquee() {
-  const items = ["4.8 / 5 on Google", "27 reviews", "Open 24 hours", "B-17 Islamabad", "Since 2012"];
+  const items = ["4.8 / 5 on Google", "27 reviews", "Mon–Thu, Sat–Sun 9 AM – 8 PM", "B-17 Islamabad", "Since 2012"];
   const dotColors = ["bg-blue", "bg-orange", "bg-green", "bg-ink", "bg-blue"];
   return (
     <section className="relative bg-bg-elev py-10">
@@ -273,10 +273,18 @@ function Contact() {
             <div>
               <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Hours</div>
               <div className="surface-card overflow-hidden">
-                {["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].map((d) => (
-                  <div key={d} className="flex items-center justify-between border-b border-black/5 px-5 py-2.5 last:border-0">
-                    <span className="text-sm text-ink-dim">{d}</span>
-                    <span className="text-sm font-medium text-green">Open 24 Hours</span>
+                {[
+                  { day: "Monday", hours: "9 AM – 8 PM" },
+                  { day: "Tuesday", hours: "9 AM – 8 PM" },
+                  { day: "Wednesday", hours: "9 AM – 8 PM" },
+                  { day: "Thursday", hours: "9 AM – 8 PM" },
+                  { day: "Friday", hours: "Closed" },
+                  { day: "Saturday", hours: "9 AM – 8 PM" },
+                  { day: "Sunday", hours: "9 AM – 8 PM" },
+                ].map(({ day, hours }) => (
+                  <div key={day} className="flex items-center justify-between border-b border-black/5 px-5 py-2.5 last:border-0">
+                    <span className="text-sm text-ink-dim">{day}</span>
+                    <span className={`text-sm font-medium ${hours === "Closed" ? "text-orange" : "text-green"}`}>{hours}</span>
                   </div>
                 ))}
               </div>
@@ -386,7 +394,7 @@ function Footer() {
             <li><a href="tel:+923347402123" className="hover:text-blue-bright">+92 334 7402123</a></li>
             <li><a href="tel:+923335116302" className="hover:text-blue-bright">+92 333 5116302</a></li>
             <li className="text-ink-dim">B-17 Multi Gardens, Islamabad</li>
-            <li className="text-ink-dim">Open 24 hours, every day</li>
+            <li className="text-ink-dim">Mon–Thu, Sat–Sun 9 AM – 8 PM / Fri closed</li>
           </ul>
         </div>
       </div>
