@@ -263,12 +263,6 @@ function Contact() {
               </a>
             </div>
 
-            <div>
-              <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Website</div>
-              <a href="https://bakirpvtltd.com" target="_blank" rel="noopener" className="text-lg text-blue-bright hover:underline">
-                bakirpvtltd.com
-              </a>
-            </div>
 
             <div>
               <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Hours</div>
