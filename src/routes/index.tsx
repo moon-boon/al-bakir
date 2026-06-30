@@ -398,9 +398,6 @@ function Footer() {
           </ul>
         </div>
       </div>
-      <div className="mx-auto mt-12 max-w-7xl text-xs text-ink-soft">
-        © {new Date().getFullYear()} Al Bakir Pvt Ltd. All rights reserved.
-      </div>
     </footer>
   );
 }
