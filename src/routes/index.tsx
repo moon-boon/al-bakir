@@ -410,7 +410,6 @@ function Index() {
       <main>
         <ScrollHero />
         <Bento />
-        <FeaturedProjects />
         <Stats />
         <About />
         <RatingMarquee />
