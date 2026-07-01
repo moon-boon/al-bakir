@@ -15,10 +15,10 @@ const logoMarkSrc = logoMarkAsset.url;
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Al Bakir Pvt Ltd — Design, Construction & Real Estate, Islamabad" },
-      { name: "description", content: "Architecture, construction and real estate in B-17 Islamabad. Open 24 hours. 4.8 rated on Google." },
+      { title: "Al Bakir Pvt Ltd — Construction, Architecture & Real Estate, Islamabad" },
+      { name: "description", content: "Integrated construction, architectural design, engineering, interior design and real estate in B-17 Islamabad. 50+ projects delivered, 4.8 on Google." },
       { property: "og:title", content: "Al Bakir Pvt Ltd — Where Dreams Become True" },
-      { property: "og:description", content: "Design, construction and real estate services in Islamabad." },
+      { property: "og:description", content: "Design, construction and real estate services in Islamabad. One trusted team from concept to handover." },
     ],
   }),
   component: Index,
@@ -47,7 +47,7 @@ function Nav() {
   const [open, setOpen] = useState(false);
   const links = [
     { href: "#services", label: "Services" },
-    { href: "#projects", label: "Projects" },
+    { href: "#values", label: "Values" },
     { href: "#about", label: "About" },
     { href: "#contact", label: "Contact" },
   ];
@@ -155,10 +155,10 @@ function Hero() {
 
 function Stats() {
   const items = [
-    { num: 12, suffix: "+", label: "Years active" },
-    { num: 80, suffix: "+", label: "Projects delivered" },
-    { num: 7, suffix: "", label: "Active sites" },
-    { num: 4.8, dec: 1, suffix: "", label: "Google rating" },
+    { num: 50, suffix: "+", label: "Construction projects" },
+    { num: 150, suffix: "+", label: "Design projects" },
+    { num: 300, suffix: "+", label: "Property transactions" },
+    { num: 80, suffix: "%", label: "Business from referrals" },
   ];
   return (
     <section className="relative bg-bg px-6 py-24 md:py-32">
@@ -173,7 +173,7 @@ function Stats() {
           {items.map((s) => (
             <div key={s.label} className="fade-up p-8 md:p-10">
               <div className="font-display text-5xl font-semibold tabular-nums text-ink md:text-6xl">
-                <Counter to={s.num} decimals={s.dec ?? 0} suffix={s.suffix} />
+                <Counter to={s.num} decimals={0} suffix={s.suffix} />
               </div>
               <div className="mt-3 text-sm text-ink-dim">{s.label}</div>
             </div>
@@ -197,8 +197,8 @@ function About() {
         <div className="fade-up md:col-span-7 md:pt-4">
           <p className="text-xl leading-relaxed text-ink">
             Al Bakir Pvt Ltd is an Islamabad based practice working at the intersection of architecture,
-            construction and real estate. We build from first principles, with a single team accountable
-            from the first sketch to the final handover.
+            construction, engineering, interior design and real estate. We build from first principles,
+            with a single team accountable from the first sketch to the final handover.
           </p>
           <p className="mt-6 text-base leading-relaxed text-ink-dim">
             Our work is shaped by Pakistani context, modern construction discipline and a refusal to
@@ -210,6 +210,147 @@ function About() {
             <div className="font-display text-xl font-semibold text-ink">B-17, Multi Gardens</div>
             <div className="text-sm text-ink-dim">A Block, Main Double Road, Islamabad, Pakistan</div>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VisionMission() {
+  const mission = [
+    "Deliver high-quality construction and engineering services.",
+    "Create innovative architectural and interior design solutions.",
+    "Build long-term relationships based on trust, integrity, and professionalism.",
+    "Provide transparent and reliable real estate consultancy.",
+    "Maximize value for homeowners, businesses, and investors.",
+    "Continuously improve through innovation, technology, and skilled professionals.",
+  ];
+  return (
+    <section className="relative bg-bg px-6 py-24 md:py-32">
+      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2">
+        <div className="fade-up surface-card-elev relative overflow-hidden p-10">
+          <span className="absolute inset-y-0 left-0 w-1 bg-blue" />
+          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-blue">Our vision</div>
+          <h3 className="font-display text-3xl font-semibold leading-tight text-ink md:text-4xl">
+            Pakistan's most trusted integrated construction, design and real estate company.
+          </h3>
+          <p className="mt-6 text-base leading-relaxed text-ink-dim">
+            Delivering innovative developments, sustainable solutions and exceptional customer experiences —
+            at home and, in time, across borders.
+          </p>
+        </div>
+
+        <div className="fade-up surface-card-elev relative overflow-hidden p-10">
+          <span className="absolute inset-y-0 left-0 w-1 bg-orange" />
+          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-orange">Our mission</div>
+          <ul className="space-y-4">
+            {mission.map((m) => (
+              <li key={m} className="flex items-start gap-3">
+                <svg className="mt-1 h-5 w-5 flex-shrink-0 text-orange" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 10l4 4 8-9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-base leading-relaxed text-ink">{m}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CoreValues() {
+  const values = [
+    { name: "Integrity", desc: "Every project handled with honesty, transparency and ethical practice." },
+    { name: "Excellence", desc: "Superior workmanship, attention to detail and continuous improvement." },
+    { name: "Innovation", desc: "Modern technology, creative thinking and efficient construction methods." },
+    { name: "Customer commitment", desc: "Clients stay at the centre of every decision we make." },
+    { name: "Teamwork", desc: "Collaboration and mutual respect that produce exceptional results." },
+    { name: "Sustainability", desc: "Responsible construction that adds long-term environmental and economic value." },
+  ];
+  return (
+    <section id="values" className="relative bg-bg-elev px-6 py-24 md:py-32">
+      <div className="mx-auto max-w-7xl">
+        <div className="fade-up mb-14 max-w-2xl">
+          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">What we stand for</div>
+          <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
+            Six values, one standard.
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
+          {values.map((v, i) => (
+            <div key={v.name} className="fade-up surface-card p-7">
+              <div className="mb-5 font-display text-sm font-medium tabular-nums text-ink-soft">
+                {String(i + 1).padStart(2, "0")}
+              </div>
+              <div className="font-display text-xl font-semibold text-ink">{v.name}</div>
+              <p className="mt-2 text-sm leading-relaxed text-ink-dim">{v.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WhyChooseApproach() {
+  const reasons = [
+    "Complete design-to-construction solutions",
+    "Experienced architects & engineers",
+    "Professional project management",
+    "Transparent business practices",
+    "Premium construction quality",
+    "Innovative design solutions",
+    "Timely project delivery",
+    "Strong customer relationships",
+    "Competitive pricing",
+    "Dedicated after-sales support",
+  ];
+  const steps = [
+    { title: "Consultation", desc: "Understanding client requirements, objectives and project vision." },
+    { title: "Planning", desc: "Feasibility analysis, budgeting, scheduling and project planning." },
+    { title: "Design", desc: "Architectural, engineering and interior design development." },
+    { title: "Construction", desc: "Professional execution with strict quality control and safety." },
+    { title: "Delivery", desc: "Timely project completion with comprehensive client support." },
+  ];
+  return (
+    <section className="relative bg-bg px-6 py-24 md:py-32">
+      <div className="mx-auto grid max-w-7xl gap-16 md:grid-cols-2">
+        <div className="fade-up">
+          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-green">Why Al Bakir</div>
+          <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
+            Ten reasons clients<br />stay with us.
+          </h2>
+          <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {reasons.map((r) => (
+              <li key={r} className="flex items-start gap-3">
+                <svg className="mt-1 h-4 w-4 flex-shrink-0 text-green" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <path d="M4 10l4 4 8-9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-sm leading-relaxed text-ink">{r}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="fade-up">
+          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-blue">Our approach</div>
+          <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
+            Five steps,<br />sketch to keys.
+          </h2>
+          <ol className="mt-10 space-y-6">
+            {steps.map((s, i) => (
+              <li key={s.title} className="flex items-start gap-5">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-ink font-display text-sm font-semibold text-white tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <div>
+                  <div className="font-display text-lg font-semibold text-ink">{s.title}</div>
+                  <div className="mt-1 text-sm leading-relaxed text-ink-dim">{s.desc}</div>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>
@@ -233,6 +374,13 @@ function RatingMarquee() {
   );
 }
 
+const socials = [
+  { name: "Facebook", href: "#", path: "M13 22v-8h3l1-4h-4V7.5c0-1.1.4-2 2-2h2V2h-3c-3 0-5 1.8-5 5v3H6v4h3v8h4z" },
+  { name: "Instagram", href: "#", path: "M7 3h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4V7a4 4 0 014-4zm5 5a4 4 0 100 8 4 4 0 000-8zm5-1.5a1 1 0 100 2 1 1 0 000-2z" },
+  { name: "YouTube", href: "#", path: "M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15V9l5 3-5 3z" },
+  { name: "TikTok", href: "#", path: "M16 3c.4 2.2 1.8 3.9 4 4.3v3c-1.6 0-3-.4-4.3-1.2v6.4a5.5 5.5 0 11-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.5 2.5 0 102 2.4V3h2.9z" },
+];
+
 function Contact() {
   const [sent, setSent] = useState(false);
   return (
@@ -255,6 +403,9 @@ function Contact() {
 
             <div>
               <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Phone</div>
+              <a href="tel:+92512765184" className="block py-1 text-lg text-ink transition-colors hover:text-blue-bright">
+                <span className="mr-3 text-xs text-ink-dim">Landline</span>051 2765184
+              </a>
               <a href="tel:+923347402123" className="block py-1 text-lg text-ink transition-colors hover:text-blue-bright">
                 <span className="mr-3 text-xs text-ink-dim">Primary</span>+92 334 7402123
               </a>
@@ -263,6 +414,33 @@ function Contact() {
               </a>
             </div>
 
+            <div>
+              <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Email</div>
+              <a href="mailto:Bakirassociates@gmail.com" className="block text-lg text-ink transition-colors hover:text-blue-bright">
+                Bakirassociates@gmail.com
+              </a>
+            </div>
+
+            <div>
+              <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Follow</div>
+              {/* TODO: replace href="#" with real social URLs */}
+              <div className="flex items-center gap-3">
+                {socials.map((s) => (
+                  <a
+                    key={s.name}
+                    href={s.href}
+                    aria-label={s.name}
+                    target="_blank"
+                    rel="noopener"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-ink transition-colors hover:border-blue-bright hover:text-blue-bright"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                      <path d={s.path} />
+                    </svg>
+                  </a>
+                ))}
+              </div>
+            </div>
 
             <div>
               <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Hours</div>
@@ -372,12 +550,29 @@ function Footer() {
           <p className="mt-4 max-w-xs text-sm text-ink-dim">
             Where dreams become true. Architecture, construction and real estate based in Islamabad.
           </p>
+          {/* TODO: replace href="#" with real social URLs */}
+          <div className="mt-5 flex items-center gap-2">
+            {socials.map((s) => (
+              <a
+                key={s.name}
+                href={s.href}
+                aria-label={s.name}
+                target="_blank"
+                rel="noopener"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-ink-dim transition-colors hover:border-blue-bright hover:text-blue-bright"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
+                  <path d={s.path} />
+                </svg>
+              </a>
+            ))}
+          </div>
         </div>
         <div>
           <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Quick links</div>
           <ul className="space-y-2 text-sm text-ink">
             <li><a href="#services" className="hover:text-blue-bright">Services</a></li>
-            <li><a href="#projects" className="hover:text-blue-bright">Projects</a></li>
+            <li><a href="#values" className="hover:text-blue-bright">Values</a></li>
             <li><a href="#about" className="hover:text-blue-bright">About</a></li>
             <li><a href="#contact" className="hover:text-blue-bright">Contact</a></li>
           </ul>
@@ -385,8 +580,10 @@ function Footer() {
         <div>
           <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Contact</div>
           <ul className="space-y-2 text-sm text-ink">
+            <li><a href="tel:+92512765184" className="hover:text-blue-bright">051 2765184</a></li>
             <li><a href="tel:+923347402123" className="hover:text-blue-bright">+92 334 7402123</a></li>
             <li><a href="tel:+923335116302" className="hover:text-blue-bright">+92 333 5116302</a></li>
+            <li><a href="mailto:Bakirassociates@gmail.com" className="hover:text-blue-bright">Bakirassociates@gmail.com</a></li>
             <li className="text-ink-dim">B-17 Multi Gardens, Islamabad</li>
             <li className="text-ink-dim">Mon–Thu, Sat–Sun 9 AM – 8 PM / Fri closed</li>
           </ul>
@@ -411,6 +608,9 @@ function Index() {
         <Bento />
         <Stats />
         <About />
+        <VisionMission />
+        <CoreValues />
+        <WhyChooseApproach />
         <RatingMarquee />
         <Contact />
       </main>
