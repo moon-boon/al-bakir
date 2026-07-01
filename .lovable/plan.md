@@ -1,63 +1,56 @@
-# Premium White Apple-Style Redesign
+## Plan: Expand home page with company profile content
 
-Shift the site from dark-blue dominant to a white, airy, Apple-like surface where the logo's brand colors (black, green, orange, blue) appear only as restrained accents.
+All changes live in `src/routes/index.tsx` (plus a small tweak to the `Stats` numbers). Home page only, no new routes. Visual language stays consistent with the existing minimal black/white + blue/orange/green accent system.
 
-## Design tokens (src/styles.css)
+### 1. New section: Vision & Mission
+Placed after `About`, before `RatingMarquee`.
 
-Light theme as default:
-- `--background`: #ffffff
-- `--surface`: #f5f5f7 (Apple's classic section grey)
-- `--surface-2`: #fbfbfd
-- `--foreground` / ink: #1d1d1f
-- `--muted-foreground`: #6e6e73
-- `--border`: #d2d2d7
-- Brand accents (used sparingly, never as full backgrounds):
-  - `--brand-blue`: #0a84ff
-  - `--brand-green`: #30d158
-  - `--brand-orange`: #ff9f0a
-  - `--brand-ink`: #1d1d1f
-- Typography: Sora (display/headings), Manrope (body) — load via `<link>` in `__root.tsx`.
-- Shadows: soft, low-contrast (`0 1px 2px rgb(0 0 0 / 0.04)`, `0 20px 40px -20px rgb(0 0 0 / 0.08)`).
-- Radius: 18–22px (Apple-like pill/rounded cards).
+- Two-column layout on desktop, stacked on mobile.
+- Left card: **Vision** — "To become Pakistan's most trusted integrated construction, design, and real estate company…" with a blue accent bar.
+- Right card: **Mission** — rendered as a 6-item checklist (deliver quality, innovative design, trust-based relationships, transparent real estate, maximize value, continuous improvement) with orange checkmarks.
+- Uses existing `surface-card-elev` styling and the `fade-up` reveal.
 
-## Composition (Apple stacked sections)
+### 2. New section: Core Values
+Placed after Vision/Mission.
 
-Restructure `src/routes/index.tsx` into full-width stacked sections, each ~100vh-ish, generous whitespace, single focal idea per section:
+- Section eyebrow "What we stand for" + heading "Six values, one standard."
+- 3×2 grid (2 cols on mobile) of value cards: Integrity, Excellence, Innovation, Customer Commitment, Teamwork, Sustainability.
+- Each card: small numbered badge (01–06), value name in display font, one-line description from the profile.
 
-1. **Hero** — White bg, oversized Sora headline in near-black, one-line subhead in `--muted-foreground`, two pill CTAs (primary black, secondary ghost). Particle logo canvas behind, retuned for light bg.
-2. **Disciplines strip** — Grey `#f5f5f7` band, three columns (Architecture / Interior / Construction) with thin colored underline using brand accents (one color each).
-3. **Featured project showcase** — Alternating white/grey sections, single large rounded card per row, parallax image placeholder, caption left-aligned. Replaces current dense bento grid.
-4. **Stats row** — White, four counters with hairline dividers, label in muted grey.
-5. **Capabilities marquee** — Grey band, thin type, monochrome.
-6. **About** — White, two-column editorial: serif-weight Sora headline left, paragraph right.
-7. **Contact** — Grey band, large headline, single inline email + magnetic CTA.
-8. **Footer** — White, minimal, hairline top border.
+### 3. New section: Why Choose Us + Project Approach
+Combined section after Core Values.
 
-## Background canvas (BackgroundCanvas.tsx)
+- **Why Choose Al Bakir** — left column, 10 bullet points from the profile rendered as a two-column checklist with green accents (Complete Design-to-Construction Solutions, Experienced Architects & Engineers, etc.).
+- **Our project approach** — right column, vertical 5-step timeline: Consultation → Planning → Design → Construction → Delivery. Each step has a numbered circle, title, and one-line description.
 
-Retune for light theme:
-- Particles: `rgba(29,29,31,0.35)` (ink) with occasional accent dots in brand blue/green/orange at low opacity.
-- Remove blue glow; replace with very faint shadow.
-- Lower particle count / opacity so it reads as a whisper, not a feature.
+### 4. Update Stats numbers to reflect real achievements
+Replace the current `Stats` items with data from the profile:
 
-## Components to update
+- `50+` construction projects delivered
+- `150+` design projects
+- `300+` property transactions
+- `80%` referral business
 
-- `Hero` — restyle for white bg, larger type scale, Apple-style CTA pills.
-- `Bento` → simplify into the stacked sections (keep `LocalTime`, `Counter`, `Marquee` as primitives but drop glass-card aesthetic).
-- `FeaturedProjects` → convert to full-width alternating showcase rows.
-- `MagneticButton` → light theme variants (solid black, ghost outline).
-- All glass/blur/`bento-card` utilities replaced with `surface-card` (white, 1px `--border`, soft shadow, 20px radius).
+The existing `Counter` component already supports numbers + suffixes.
 
-## Out of scope
+### 5. Contact section updates
+In the existing `Contact` component:
 
-- Real project photography (placeholders remain).
-- Dark mode toggle.
-- Content/copy rewrites beyond what white-space demands.
-- New sections beyond what's listed.
+- **Phone**: add a third row for landline `051 2765184` (label "Landline"), keep the two mobile numbers.
+- **Email**: add new block below Phone with `Bakirassociates@gmail.com` as a `mailto:` link.
+- **Social**: add new "Follow" block with Facebook, Instagram, YouTube, TikTok icon links. Since actual URLs weren't provided, links will point to `#` with a code comment noting they need real URLs — you can send them anytime and I'll swap them in.
 
-## Technical notes
+### 6. Footer updates
+- Add landline, email, and social row to the footer contact column so all contact info is consistent across the page.
 
-- Add Sora + Manrope via `<link>` tags in `src/routes/__root.tsx` head (per Tailwind v4 remote-font rule).
-- Update `@theme` tokens in `src/styles.css`; replace dark-mode-first values; keep shadcn `@theme inline` mapping intact.
-- Remove/replace `bento-card` utility with `surface-card`; keep `fade-up` and marquee keyframes.
-- No backend, no new packages required (fonts via CDN link tags).
+### 7. Navigation
+Add a "Values" anchor link to the top nav (both desktop and mobile menu) so the new sections are reachable from the top of the page. Existing Services/Projects/About/Contact links stay.
+
+### Not included (per your answers)
+- No separate `/about`, `/services`, or `/leadership` routes.
+- Full services sub-lists and leadership team bios are omitted — say the word if you want either added later as a home-page section.
+
+### Technical notes
+- All new content is presentational JSX in `src/routes/index.tsx`; no new components, no new dependencies, no backend changes.
+- Colors use existing tokens (`text-ink`, `text-ink-dim`, `bg-blue`, `text-orange`, `text-green`, `surface-card`, `surface-card-elev`) — no hardcoded colors.
+- SEO `head()` description will be refreshed to reflect the fuller company scope (construction, architectural design, engineering, interior design, real estate).
