@@ -1,4 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import architectureDesignThumb from "@/assets/architecture-design-thumb.png";
+import constructionThumb from "@/assets/construction-thumb.jpg";
+import { trackSpotlight } from "@/lib/utils";
 import LocalTime from "./LocalTime";
 import Marquee from "./Marquee";
 
@@ -9,6 +12,7 @@ const services = [
     desc: "Bespoke residential and commercial design rooted in context, climate and craft.",
     accentClass: "text-blue-bright",
     underline: "bg-blue",
+    thumb: architectureDesignThumb,
     icon: (
       <svg viewBox="0 0 64 64" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="1.4">
         <circle cx="32" cy="20" r="4" />
@@ -22,6 +26,7 @@ const services = [
     desc: "End to end build delivery with disciplined timelines and material integrity.",
     accentClass: "text-orange",
     underline: "bg-orange",
+    thumb: constructionThumb,
     icon: (
       <svg viewBox="0 0 64 64" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="1.4">
         <path d="M8 56V28l24-16 24 16v28" strokeLinejoin="round" />
@@ -100,18 +105,31 @@ export default function Bento() {
               key={s.title}
               to="/gallery/$slug"
               params={{ slug: s.slug }}
-              className="fade-up surface-card group relative block cursor-pointer transition hover:-translate-y-1 hover:shadow-lg md:col-span-4 md:row-span-2"
+              onMouseMove={trackSpotlight}
+              className="fade-up surface-card group relative block cursor-pointer overflow-hidden transition hover:-translate-y-1 hover:shadow-lg md:col-span-4 md:row-span-2"
               style={{ transitionDelay: `${i * 80}ms` }}
             >
-              <div className="flex h-full flex-col justify-between p-8">
-                <div className={`${s.accentClass} transition-transform duration-500 group-hover:rotate-[6deg]`}>
+              {s.thumb && (
+                <>
+                  <img
+                    src={s.thumb}
+                    alt=""
+                    aria-hidden
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
+                </>
+              )}
+              <div className="spotlight-overlay pointer-events-none opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="relative flex h-full flex-col justify-between p-8">
+                <div className={`glass-light flex h-16 w-16 items-center justify-center rounded-2xl ${s.accentClass} transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-[6deg]`}>
                   {s.icon}
                 </div>
                 <div>
-                  <h3 className="font-display text-2xl font-semibold text-ink">{s.title}</h3>
+                  <h3 className={`font-display text-2xl font-semibold ${s.thumb ? "text-white" : "text-ink"}`}>{s.title}</h3>
                   <div className={`my-3 h-0.5 w-8 ${s.underline} transition-all duration-500 group-hover:w-16`} />
-                  <p className="mt-2 text-sm leading-relaxed text-ink-dim">{s.desc}</p>
-                  <div className="mt-4 text-xs uppercase tracking-[0.2em] text-ink-dim opacity-0 transition group-hover:opacity-100">View gallery →</div>
+                  <p className={`mt-2 text-sm leading-relaxed ${s.thumb ? "text-white/80" : "text-ink-dim"}`}>{s.desc}</p>
+                  <div className={`mt-4 text-xs uppercase tracking-[0.2em] opacity-0 transition group-hover:opacity-100 ${s.thumb ? "text-white/70" : "text-ink-dim"}`}>View gallery →</div>
                 </div>
               </div>
             </Link>

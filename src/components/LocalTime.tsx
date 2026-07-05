@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useOpenStatus } from "@/hooks/use-open-status";
 
 export default function LocalTime() {
   const [now, setNow] = useState<Date | null>(null);
@@ -19,26 +20,7 @@ export default function LocalTime() {
       }).format(now)
     : "--:--:--";
 
-  // Determine open status in Asia/Karachi time
-  let isOpen = false;
-  if (now) {
-    const parts = new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Asia/Karachi",
-      weekday: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).formatToParts(now);
-
-    const day = parts.find((p) => p.type === "weekday")?.value;
-    const hour = parseInt(parts.find((p) => p.type === "hour")?.value ?? "0", 10);
-    const minute = parseInt(parts.find((p) => p.type === "minute")?.value ?? "0", 10);
-    const timeValue = hour + minute / 60;
-
-    const isFriday = day === "Fri";
-    isOpen = !isFriday && timeValue >= 9 && timeValue < 20;
-  }
-
+  const { isOpen } = useOpenStatus();
   const statusColor = isOpen ? "text-green" : "text-orange";
   const statusLabel = isOpen ? "OPEN NOW" : "CLOSED NOW";
   const statusDot = isOpen ? "bg-green" : "bg-orange";
@@ -54,7 +36,7 @@ export default function LocalTime() {
       </div>
       <div className="font-display text-5xl font-semibold tabular-nums text-ink md:text-6xl">{fmt}</div>
       <div className="mt-2 text-xs uppercase tracking-[0.2em] text-ink-dim">Islamabad · PKT</div>
-      <div className="mt-6 text-sm text-ink-dim">Mon–Thu, Sat–Sun: 9 AM – 8 PM / Fri closed</div>
+      <div className="mt-6 text-sm text-ink-dim">Open 24 hours daily, except Friday</div>
     </div>
   );
 }

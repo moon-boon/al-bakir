@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import BackgroundCanvas from "@/components/BackgroundCanvas";
 import Bento from "@/components/Bento";
@@ -6,9 +7,9 @@ import MagneticButton from "@/components/MagneticButton";
 import Marquee from "@/components/Marquee";
 import Counter from "@/components/Counter";
 import ScrollHero from "@/components/ScrollHero";
-import logoMarkAsset from "@/assets/logo-mark.png.asset.json";
+import { useOpenStatus } from "@/hooks/use-open-status";
+import logoMarkSrc from "@/assets/logo-mark.png";
 import logoSrc from "@/assets/logo.png";
-const logoMarkSrc = logoMarkAsset.url;
 
 
 
@@ -40,11 +41,12 @@ function useReveal() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  });
+  }, []);
 }
 
 function Nav() {
   const [open, setOpen] = useState(false);
+  const { isOpen } = useOpenStatus();
   const links = [
     { href: "#services", label: "Services" },
     { href: "#values", label: "Values" },
@@ -53,14 +55,14 @@ function Nav() {
   ];
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 bg-black/90 text-white backdrop-blur-md transition-all duration-300"
+      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/40 text-white backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a href="#top" className="flex items-center gap-3">
           <img src={logoMarkSrc} alt="Al Bakir" className="h-9 w-14 object-contain" />
-          <div className="leading-tight">
-            <div className="font-display text-base font-semibold tracking-tight text-white">Al Bakir</div>
-            <div className="text-[10px] tracking-[0.2em] text-white/70">PVT · LTD</div>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display text-base font-semibold tracking-tight text-white">Al Bakir</span>
+            <span className="text-[10px] tracking-[0.2em] text-white/70">PVT · LTD</span>
           </div>
         </a>
         <nav className="hidden items-center gap-8 md:flex">
@@ -69,18 +71,18 @@ function Nav() {
               {l.label}
             </a>
           ))}
-          <span className="ml-2 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
+          <span className="glass-dark ml-2 flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium text-white">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-70" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green" />
+              <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-70 ${isOpen ? "bg-green" : "bg-orange"}`} />
+              <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${isOpen ? "bg-green" : "bg-orange"}`} />
             </span>
-            9 AM – 8 PM
+            {isOpen ? "Open now" : "Closed now"}
           </span>
         </nav>
         <button
           aria-label="Menu"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="glass-dark flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl md:hidden"
         >
           <span className={`block h-px w-6 bg-white transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
           <span className={`block h-px w-6 bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
@@ -106,58 +108,104 @@ function Nav() {
   );
 }
 
-function Hero() {
+function TrustStrip() {
+  const stats = [
+    { num: 4.8, dec: 1, label: "Google Rating" },
+    { num: 24, dec: 0, label: "Daily Hours" },
+  ];
   return (
-    <section id="top" className="relative flex min-h-screen items-center justify-center px-6 pt-24">
-      <div className="mx-auto max-w-6xl text-center">
-        <div className="fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-4 py-1.5 text-xs font-medium text-ink-dim backdrop-blur">
-          <span className="h-1.5 w-1.5 rounded-full bg-blue" />
-          Islamabad · Design · Build · Invest
-        </div>
-        <h1 className="fade-up font-display font-semibold leading-[0.95] tracking-[-0.035em] text-ink" style={{ fontSize: "clamp(3.25rem, 9vw, 7.5rem)" }}>
-          Where Architecture
-          <br />
-          <span className="text-ink-dim">Meets Ambition.</span>
-        </h1>
-        <p className="fade-up mx-auto mt-8 max-w-xl text-lg leading-relaxed text-ink-dim">
-          Design, construction and real estate — a single studio in Islamabad accountable from first sketch to final handover.
-        </p>
-
-        <div className="fade-up mt-10 flex flex-wrap items-center justify-center gap-3">
+    <section className="relative bg-bg px-6 py-14">
+      <div className="fade-up mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-8 sm:gap-14">
+        {stats.map((s) => (
+          <div key={s.label} className="flex items-center gap-3">
+            <span className="font-display text-3xl font-semibold leading-none text-ink tabular-nums">
+              <Counter to={s.num} decimals={s.dec} />
+            </span>
+            <span className="text-xs text-ink-dim">{s.label}</span>
+          </div>
+        ))}
+        <div className="flex items-center gap-3">
           <MagneticButton as="a" href="#contact" className="btn-primary">Start your project</MagneticButton>
-          <a href="#projects" className="btn-ghost">View our work →</a>
-        </div>
-
-        <div className="fade-up mt-16 grid grid-cols-3 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-6">
-          {[
-            { num: 4.8, dec: 1, label: "Google Rating", suffix: "" },
-            { num: 27, dec: 0, label: "Reviews", suffix: "" },
-            { num: 11, dec: 0, label: "Daily Hours", suffix: "" },
-          ].map((s) => (
-            <div key={s.label} className="flex flex-col items-center gap-1 px-2 sm:flex-row sm:gap-3">
-              <span className="font-display text-3xl font-semibold leading-none text-ink tabular-nums">
-                <Counter to={s.num} decimals={s.dec} suffix={s.suffix ?? ""} />
-              </span>
-              <span className="text-xs text-ink-dim">{s.label}</span>
-            </div>
-          ))}
+          <a href="#services" className="btn-ghost">View our work →</a>
         </div>
       </div>
+    </section>
+  );
+}
 
-      <a href="#services" aria-label="Scroll" className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <svg width="22" height="36" viewBox="0 0 24 40" className="animate-bounce text-ink-soft">
-          <path d="M12 4v28M4 24l8 8 8-8" stroke="currentColor" strokeWidth="1.4" fill="none" />
-        </svg>
-      </a>
+const serviceGroups = [
+  {
+    title: "Construction",
+    accentBar: "bg-blue",
+    accentText: "text-blue-bright",
+    items: ["Grey Structure Construction", "Turnkey Construction", "Renovation & Remodeling"],
+  },
+  {
+    title: "Property types",
+    accentBar: "bg-orange",
+    accentText: "text-orange",
+    items: ["Residential Homes", "Luxury Villas", "Farmhouses", "Commercial Buildings"],
+  },
+  {
+    title: "Project delivery",
+    accentBar: "bg-green",
+    accentText: "text-green",
+    items: ["Project Management", "Construction Supervision", "Cost Estimation", "Quantity Surveying"],
+  },
+];
+
+function ConstructionServices() {
+  const reduce = useReducedMotion();
+  return (
+    <section id="construction-services" className="relative bg-bg px-6 py-24 md:py-32">
+      <div className="mx-auto max-w-7xl">
+        <div className="fade-up mb-14 max-w-2xl">
+          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Our services</div>
+          <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
+            Construction,<br />
+            <span className="text-ink-dim">covered end to end.</span>
+          </h2>
+        </div>
+        <motion.div
+          className="grid gap-10 md:grid-cols-3"
+          initial={reduce ? "shown" : "hidden"}
+          whileInView="shown"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{ hidden: {}, shown: { transition: { staggerChildren: 0.1 } } }}
+        >
+          {serviceGroups.map((g) => (
+            <motion.div
+              key={g.title}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+              }}
+            >
+              <div className={`mb-5 h-0.5 w-10 ${g.accentBar}`} />
+              <h3 className={`font-display text-lg font-semibold ${g.accentText}`}>{g.title}</h3>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {g.items.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-black/10 bg-bg-elev px-4 py-2 text-sm text-ink transition-colors hover:border-black/20"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </section>
   );
 }
 
 function Stats() {
   const items = [
-    { num: 50, suffix: "+", label: "Construction projects" },
+    { num: 31, suffix: "+", label: "Active sites" },
     { num: 150, suffix: "+", label: "Design projects" },
-    { num: 300, suffix: "+", label: "Property transactions" },
+    { num: 75, suffix: "+", label: "Delivered projects" },
     { num: 80, suffix: "%", label: "Business from referrals" },
   ];
   return (
@@ -202,13 +250,13 @@ function About() {
           </p>
           <p className="mt-6 text-base leading-relaxed text-ink-dim">
             Our work is shaped by Pakistani context, modern construction discipline and a refusal to
-            compromise on detail. Open Monday–Thursday and Saturday–Sunday, 9 AM to 8 PM. Friday closed.
+            compromise on detail. Open 24 hours a day, every day except Friday.
           </p>
 
           <div className="mt-10 surface-card-elev p-6">
-            <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-orange">Studio location</div>
-            <div className="font-display text-xl font-semibold text-ink">B-17, Multi Gardens</div>
-            <div className="text-sm text-ink-dim">A Block, Main Double Road, Islamabad, Pakistan</div>
+            <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-orange">Head office</div>
+            <div className="font-display text-xl font-semibold text-ink">Multi Gardens B-17</div>
+            <div className="text-sm text-ink-dim">Islamabad, Pakistan</div>
           </div>
         </div>
       </div>
@@ -260,6 +308,7 @@ function VisionMission() {
 }
 
 function CoreValues() {
+  const reduce = useReducedMotion();
   const values = [
     { name: "Integrity", desc: "Every project handled with honesty, transparency and ethical practice." },
     { name: "Excellence", desc: "Superior workmanship, attention to detail and continuous improvement." },
@@ -277,17 +326,30 @@ function CoreValues() {
             Six values, one standard.
           </h2>
         </div>
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
+        <motion.div
+          className="grid grid-cols-2 gap-5 md:grid-cols-3"
+          initial={reduce ? "shown" : "hidden"}
+          whileInView="shown"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{ hidden: {}, shown: { transition: { staggerChildren: 0.08 } } }}
+        >
           {values.map((v, i) => (
-            <div key={v.name} className="fade-up surface-card p-7">
+            <motion.div
+              key={v.name}
+              className="surface-card p-7"
+              variants={{
+                hidden: { opacity: 0, y: 24 },
+                shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+              }}
+            >
               <div className="mb-5 font-display text-sm font-medium tabular-nums text-ink-soft">
                 {String(i + 1).padStart(2, "0")}
               </div>
               <div className="font-display text-xl font-semibold text-ink">{v.name}</div>
               <p className="mt-2 text-sm leading-relaxed text-ink-dim">{v.desc}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -358,8 +420,8 @@ function WhyChooseApproach() {
 }
 
 function RatingMarquee() {
-  const items = ["4.8 / 5 on Google", "27 reviews", "Mon–Thu, Sat–Sun 9 AM – 8 PM", "B-17 Islamabad", "Since 2012"];
-  const dotColors = ["bg-blue", "bg-orange", "bg-green", "bg-ink", "bg-blue"];
+  const items = ["4.8 / 5 on Google", "Open 24 hours, except Friday", "B-17 Islamabad", "Since 2012"];
+  const dotColors = ["bg-blue", "bg-green", "bg-ink", "bg-blue"];
   return (
     <section className="relative bg-bg-elev py-10">
       <Marquee speed={28}>
@@ -375,14 +437,33 @@ function RatingMarquee() {
 }
 
 const socials = [
-  { name: "Facebook", href: "#", path: "M13 22v-8h3l1-4h-4V7.5c0-1.1.4-2 2-2h2V2h-3c-3 0-5 1.8-5 5v3H6v4h3v8h4z" },
-  { name: "Instagram", href: "#", path: "M7 3h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4V7a4 4 0 014-4zm5 5a4 4 0 100 8 4 4 0 000-8zm5-1.5a1 1 0 100 2 1 1 0 000-2z" },
-  { name: "YouTube", href: "#", path: "M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15V9l5 3-5 3z" },
-  { name: "TikTok", href: "#", path: "M16 3c.4 2.2 1.8 3.9 4 4.3v3c-1.6 0-3-.4-4.3-1.2v6.4a5.5 5.5 0 11-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.5 2.5 0 102 2.4V3h2.9z" },
+  { name: "Facebook", href: "https://www.facebook.com/p/Al-Bakir-pvtltd-100075875230679/", path: "M13 22v-8h3l1-4h-4V7.5c0-1.1.4-2 2-2h2V2h-3c-3 0-5 1.8-5 5v3H6v4h3v8h4z" },
+  { name: "Instagram", href: "https://www.instagram.com/al_bakir_pvt_ltd/", path: "M7 3h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4V7a4 4 0 014-4zm5 5a4 4 0 100 8 4 4 0 000-8zm5-1.5a1 1 0 100 2 1 1 0 000-2z" },
+  { name: "YouTube", href: "https://www.youtube.com/@al-bakirstudio?app=desktop", path: "M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15V9l5 3-5 3z" },
+  { name: "TikTok", href: "https://www.tiktok.com/@albakirpvtltd", path: "M16 3c.4 2.2 1.8 3.9 4 4.3v3c-1.6 0-3-.4-4.3-1.2v6.4a5.5 5.5 0 11-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.5 2.5 0 102 2.4V3h2.9z" },
 ];
+
+const ENQUIRY_EMAIL = "Bakirassociates@gmail.com";
 
 function Contact() {
   const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ name: "", phone: "", email: "", projectType: "Architecture", message: "" });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const subject = `New enquiry from ${form.name} — ${form.projectType}`;
+    const body = [
+      `Name: ${form.name}`,
+      `Phone: ${form.phone}`,
+      `Email: ${form.email}`,
+      `Project type: ${form.projectType}`,
+      "",
+      form.message,
+    ].join("\n");
+    window.location.href = `mailto:${ENQUIRY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSent(true);
+  };
+
   return (
     <section id="contact" className="relative bg-bg-elev px-6 py-28 md:py-36">
       <div className="mx-auto max-w-7xl">
@@ -396,9 +477,8 @@ function Contact() {
         <div className="grid gap-10 md:grid-cols-2">
           <div className="fade-up space-y-8">
             <div>
-              <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Address</div>
-              <div className="text-lg text-ink">A Block Main Double Road</div>
-              <div className="text-lg text-ink">Multi Gardens B-17, Islamabad, Pakistan</div>
+              <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Head office</div>
+              <div className="text-lg text-ink">Multi Gardens B-17, Islamabad</div>
             </div>
 
             <div>
@@ -423,7 +503,6 @@ function Contact() {
 
             <div>
               <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Follow</div>
-              {/* TODO: replace href="#" with real social URLs */}
               <div className="flex items-center gap-3">
                 {socials.map((s) => (
                   <a
@@ -432,7 +511,7 @@ function Contact() {
                     aria-label={s.name}
                     target="_blank"
                     rel="noopener"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-ink transition-colors hover:border-blue-bright hover:text-blue-bright"
+                    className="glass-light flex h-10 w-10 items-center justify-center rounded-full text-ink hover:-translate-y-0.5 hover:text-blue-bright"
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                       <path d={s.path} />
@@ -446,13 +525,13 @@ function Contact() {
               <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Hours</div>
               <div className="surface-card overflow-hidden">
                 {[
-                  { day: "Monday", hours: "9 AM – 8 PM" },
-                  { day: "Tuesday", hours: "9 AM – 8 PM" },
-                  { day: "Wednesday", hours: "9 AM – 8 PM" },
-                  { day: "Thursday", hours: "9 AM – 8 PM" },
+                  { day: "Monday", hours: "Open 24 hours" },
+                  { day: "Tuesday", hours: "Open 24 hours" },
+                  { day: "Wednesday", hours: "Open 24 hours" },
+                  { day: "Thursday", hours: "Open 24 hours" },
                   { day: "Friday", hours: "Closed" },
-                  { day: "Saturday", hours: "9 AM – 8 PM" },
-                  { day: "Sunday", hours: "9 AM – 8 PM" },
+                  { day: "Saturday", hours: "Open 24 hours" },
+                  { day: "Sunday", hours: "Open 24 hours" },
                 ].map(({ day, hours }) => (
                   <div key={day} className="flex items-center justify-between border-b border-black/5 px-5 py-2.5 last:border-0">
                     <span className="text-sm text-ink-dim">{day}</span>
@@ -474,7 +553,7 @@ function Contact() {
           </div>
 
           <form
-            onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+            onSubmit={handleSubmit}
             className="fade-up space-y-5 surface-card p-8"
           >
             {sent ? (
@@ -484,29 +563,35 @@ function Contact() {
                   <path d="M20 33l8 8 16-18" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <h3 className="mb-2 font-display text-3xl font-semibold text-ink">Enquiry received</h3>
-                <p className="text-ink-dim">We will be in touch within 24 hours.</p>
+                <p className="text-ink-dim">Your email client should have opened with the enquiry ready to send. We will be in touch within 24 hours.</p>
               </div>
             ) : (
               <>
                 {[
-                  { name: "name", label: "Name", type: "text" },
-                  { name: "phone", label: "Phone", type: "tel" },
-                  { name: "email", label: "Email", type: "email" },
+                  { name: "name" as const, label: "Name", type: "text" },
+                  { name: "phone" as const, label: "Phone", type: "tel" },
+                  { name: "email" as const, label: "Email", type: "email" },
                 ].map((f) => (
                   <div key={f.name}>
-                    <label className="mb-2 block text-xs font-medium text-ink-dim">{f.label}</label>
+                    <label htmlFor={`contact-${f.name}`} className="mb-2 block text-xs font-medium text-ink-dim">{f.label}</label>
                     <input
                       required
+                      id={`contact-${f.name}`}
                       type={f.type}
                       name={f.name}
+                      value={form[f.name]}
+                      onChange={(e) => setForm((prev) => ({ ...prev, [f.name]: e.target.value }))}
                       className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-ink outline-none transition-colors focus:border-blue-bright focus:ring-2 focus:ring-blue/20"
                     />
                   </div>
                 ))}
                 <div>
-                  <label className="mb-2 block text-xs font-medium text-ink-dim">Project type</label>
+                  <label htmlFor="contact-project-type" className="mb-2 block text-xs font-medium text-ink-dim">Project type</label>
                   <select
                     required
+                    id="contact-project-type"
+                    value={form.projectType}
+                    onChange={(e) => setForm((prev) => ({ ...prev, projectType: e.target.value }))}
                     className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-ink outline-none focus:border-blue-bright focus:ring-2 focus:ring-blue/20"
                   >
                     <option>Architecture</option>
@@ -516,10 +601,13 @@ function Contact() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-2 block text-xs font-medium text-ink-dim">Message</label>
+                  <label htmlFor="contact-message" className="mb-2 block text-xs font-medium text-ink-dim">Message</label>
                   <textarea
                     required
+                    id="contact-message"
                     rows={5}
+                    value={form.message}
+                    onChange={(e) => setForm((prev) => ({ ...prev, message: e.target.value }))}
                     className="w-full resize-none rounded-xl border border-black/10 bg-white px-4 py-3 text-ink outline-none focus:border-blue-bright focus:ring-2 focus:ring-blue/20"
                   />
                 </div>
@@ -550,7 +638,6 @@ function Footer() {
           <p className="mt-4 max-w-xs text-sm text-ink-dim">
             Where dreams become true. Architecture, construction and real estate based in Islamabad.
           </p>
-          {/* TODO: replace href="#" with real social URLs */}
           <div className="mt-5 flex items-center gap-2">
             {socials.map((s) => (
               <a
@@ -559,7 +646,7 @@ function Footer() {
                 aria-label={s.name}
                 target="_blank"
                 rel="noopener"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-ink-dim transition-colors hover:border-blue-bright hover:text-blue-bright"
+                className="glass-light flex h-9 w-9 items-center justify-center rounded-full text-ink-dim hover:-translate-y-0.5 hover:text-blue-bright"
               >
                 <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
                   <path d={s.path} />
@@ -584,8 +671,8 @@ function Footer() {
             <li><a href="tel:+923347402123" className="hover:text-blue-bright">+92 334 7402123</a></li>
             <li><a href="tel:+923335116302" className="hover:text-blue-bright">+92 333 5116302</a></li>
             <li><a href="mailto:Bakirassociates@gmail.com" className="hover:text-blue-bright">Bakirassociates@gmail.com</a></li>
-            <li className="text-ink-dim">B-17 Multi Gardens, Islamabad</li>
-            <li className="text-ink-dim">Mon–Thu, Sat–Sun 9 AM – 8 PM / Fri closed</li>
+            <li className="text-ink-dim">Head office, Multi Gardens B-17, Islamabad</li>
+            <li className="text-ink-dim">Open 24 hours daily</li>
           </ul>
         </div>
       </div>
@@ -605,7 +692,9 @@ function Index() {
       <Nav />
       <main>
         <ScrollHero />
+        <TrustStrip />
         <Bento />
+        <ConstructionServices />
         <Stats />
         <About />
         <VisionMission />
