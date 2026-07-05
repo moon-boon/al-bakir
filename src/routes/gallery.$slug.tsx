@@ -27,7 +27,7 @@ type Item = { id: string; title: string; image: string; description: string };
 export const Route = createFileRoute("/gallery/$slug")({
   head: ({ params }) => {
     const d = DISCIPLINES[params.slug];
-    const title = d ? `${d.title} — Gallery | Al Bakir` : "Gallery | Al Bakir";
+    const title = d ? `${d.title}, Gallery | Al Bakir` : "Gallery | Al Bakir";
     const description = d?.desc ?? "Project gallery.";
     return {
       meta: [

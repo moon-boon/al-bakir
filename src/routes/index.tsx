@@ -16,9 +16,9 @@ import logoSrc from "@/assets/logo.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Al Bakir Pvt Ltd — Construction, Architecture & Real Estate, Islamabad" },
+      { title: "Al Bakir Pvt Ltd, Construction, Architecture & Real Estate, Islamabad" },
       { name: "description", content: "Integrated construction, architectural design, engineering, interior design and real estate in B-17 Islamabad. 50+ projects delivered, 4.8 on Google." },
-      { property: "og:title", content: "Al Bakir Pvt Ltd — Where Dreams Become True" },
+      { property: "og:title", content: "Al Bakir Pvt Ltd, Where Dreams Become True" },
       { property: "og:description", content: "Design, construction and real estate services in Islamabad. One trusted team from concept to handover." },
     ],
   }),
@@ -154,13 +154,33 @@ const serviceGroups = [
   },
 ];
 
+const realEstateGroups = [
+  {
+    title: "Property services",
+    accentBar: "bg-green",
+    accentText: "text-green",
+    items: ["Property Buying", "Property Selling", "Property Management", "Property Rentals"],
+  },
+  {
+    title: "Project types",
+    accentBar: "bg-blue",
+    accentText: "text-blue-bright",
+    items: ["Residential Projects", "Commercial Projects"],
+  },
+  {
+    title: "Investment & marketing",
+    accentBar: "bg-orange",
+    accentText: "text-orange",
+    items: ["Investment Consultancy", "Overseas Investment Guidance", "Project Marketing"],
+  },
+];
+
 function ConstructionServices() {
   const reduce = useReducedMotion();
   return (
     <section id="construction-services" className="relative bg-bg px-6 py-24 md:py-32">
       <div className="mx-auto max-w-7xl">
         <div className="fade-up mb-14 max-w-2xl">
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Our services</div>
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
             Construction,<br />
             <span className="text-ink-dim">covered end to end.</span>
@@ -201,10 +221,59 @@ function ConstructionServices() {
   );
 }
 
+function RealEstateServices() {
+  const reduce = useReducedMotion();
+  return (
+    <section id="real-estate-services" className="relative bg-bg-elev px-6 py-24 md:py-32">
+      <div className="mx-auto max-w-7xl">
+        <div className="fade-up mb-14 max-w-2xl">
+          <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
+            Real estate services.
+          </h2>
+          <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-ink-dim">
+            Our professional real estate team provides reliable consultancy and investment solutions,
+            including dedicated support for overseas investment.
+          </p>
+        </div>
+        <motion.div
+          className="grid gap-10 md:grid-cols-3"
+          initial={reduce ? "shown" : "hidden"}
+          whileInView="shown"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{ hidden: {}, shown: { transition: { staggerChildren: 0.1 } } }}
+        >
+          {realEstateGroups.map((g) => (
+            <motion.div
+              key={g.title}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+              }}
+            >
+              <div className={`mb-5 h-0.5 w-10 ${g.accentBar}`} />
+              <h3 className={`font-display text-lg font-semibold ${g.accentText}`}>{g.title}</h3>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {g.items.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-black/10 bg-bg px-4 py-2 text-sm text-ink transition-colors hover:border-black/20"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function Stats() {
   const items = [
     { num: 31, suffix: "+", label: "Active sites" },
-    { num: 150, suffix: "+", label: "Design projects" },
+    { num: 200, suffix: "+", label: "Design projects" },
     { num: 75, suffix: "+", label: "Delivered projects" },
     { num: 80, suffix: "%", label: "Business from referrals" },
   ];
@@ -212,7 +281,6 @@ function Stats() {
     <section className="relative bg-bg px-6 py-24 md:py-32">
       <div className="mx-auto max-w-7xl">
         <div className="fade-up mb-14 max-w-2xl">
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">By the numbers</div>
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
             A decade of building, measured.
           </h2>
@@ -235,25 +303,25 @@ function Stats() {
 function About() {
   return (
     <section id="about" className="relative bg-bg px-6 py-28 md:py-36">
-      <div className="mx-auto grid max-w-7xl gap-16 md:grid-cols-12 md:items-start">
-        <div className="fade-up md:col-span-5">
+      <div className="mx-auto max-w-7xl">
+        <div className="fade-up max-w-3xl">
           <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">About the studio</div>
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-6xl">
             Where dreams<br />become true.
           </h2>
-        </div>
-        <div className="fade-up md:col-span-7 md:pt-4">
-          <p className="text-xl leading-relaxed text-ink">
+          <p className="mt-8 text-xl leading-relaxed text-ink">
             Al Bakir Pvt Ltd is an Islamabad based practice working at the intersection of architecture,
             construction, engineering, interior design and real estate. We build from first principles,
             with a single team accountable from the first sketch to the final handover.
           </p>
-          <p className="mt-6 text-base leading-relaxed text-ink-dim">
+          <p className="mt-6 max-w-[65ch] text-base leading-relaxed text-ink-dim">
             Our work is shaped by Pakistani context, modern construction discipline and a refusal to
             compromise on detail. Open 24 hours a day, every day except Friday.
           </p>
+        </div>
 
-          <div className="mt-10 surface-card-elev p-6">
+        <div className="fade-up mt-10 inline-flex surface-card-elev p-6">
+          <div>
             <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-orange">Head office</div>
             <div className="font-display text-xl font-semibold text-ink">Multi Gardens B-17</div>
             <div className="text-sm text-ink-dim">Islamabad, Pakistan</div>
@@ -278,19 +346,20 @@ function VisionMission() {
       <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2">
         <div className="fade-up surface-card-elev relative overflow-hidden p-10">
           <span className="absolute inset-y-0 left-0 w-1 bg-blue" />
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-blue">Our vision</div>
           <h3 className="font-display text-3xl font-semibold leading-tight text-ink md:text-4xl">
             Pakistan's most trusted integrated construction, design and real estate company.
           </h3>
           <p className="mt-6 text-base leading-relaxed text-ink-dim">
-            Delivering innovative developments, sustainable solutions and exceptional customer experiences —
+            Delivering innovative developments, sustainable solutions and exceptional customer experiences,
             at home and, in time, across borders.
           </p>
         </div>
 
         <div className="fade-up surface-card-elev relative overflow-hidden p-10">
           <span className="absolute inset-y-0 left-0 w-1 bg-orange" />
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-orange">Our mission</div>
+          <h3 className="mb-5 font-display text-3xl font-semibold leading-tight text-ink md:text-4xl">
+            Our mission
+          </h3>
           <ul className="space-y-4">
             {mission.map((m) => (
               <li key={m} className="flex items-start gap-3">
@@ -321,7 +390,6 @@ function CoreValues() {
     <section id="values" className="relative bg-bg-elev px-6 py-24 md:py-32">
       <div className="mx-auto max-w-7xl">
         <div className="fade-up mb-14 max-w-2xl">
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">What we stand for</div>
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
             Six values, one standard.
           </h2>
@@ -396,7 +464,6 @@ function WhyChooseApproach() {
         </div>
 
         <div className="fade-up">
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-blue">Our approach</div>
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
             Five steps,<br />sketch to keys.
           </h2>
@@ -436,11 +503,91 @@ function RatingMarquee() {
   );
 }
 
-const socials = [
+function EmapVerification() {
+  const societies = ["Faisal Hills", "Multi Gardens B-17", "Faisal Margalla City (FMC)"];
+  return (
+    <section className="relative bg-bg-elev px-6 py-24 md:py-32">
+      <div className="mx-auto max-w-7xl">
+        <div className="fade-up surface-card-elev mx-auto max-w-3xl p-10 text-center md:p-14">
+          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-green/10 text-green">
+            <svg className="h-6 w-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 10l4 4 8-9" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <h2 className="font-display text-3xl font-semibold leading-[1.1] text-ink md:text-5xl">
+            Verified on eMap.pk.
+          </h2>
+          <p className="mx-auto mt-5 max-w-[52ch] text-base leading-relaxed text-ink-dim">
+            Al Bakir holds an exclusive eMap.pk subscription. We are the only agency authorized to publish
+            verified listings for these societies.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            {societies.map((s) => (
+              <span
+                key={s}
+                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-bg px-4 py-2 text-sm font-medium text-ink"
+              >
+                <svg className="h-3.5 w-3.5 flex-shrink-0 text-green" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <path d="M4 10l4 4 8-9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {s}
+              </span>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-[48ch] text-sm leading-relaxed text-ink-dim">
+            List with Al Bakir and your property reaches buyers already using eMap to research these exact
+            locations.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InvestorOpportunities() {
+  const points = [
+    "Transparent reporting & disciplined governance",
+    "Rigorous, milestone-driven project management",
+    "Quality execution with a referral-led track record",
+    "Residential, commercial & mixed-use opportunities",
+  ];
+  return (
+    <section className="relative bg-bg px-6 py-24 md:py-32">
+      <div className="mx-auto max-w-7xl">
+        <div className="fade-up surface-card-elev p-10 md:p-14">
+          <div className="max-w-2xl">
+            <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
+              Investor opportunities.
+            </h2>
+            <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-ink-dim">
+              We welcome partnerships with investors, developers, financial institutions and corporate
+              organisations seeking reliable opportunities in Pakistan's growing construction and real
+              estate sectors.
+            </p>
+          </div>
+          <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
+            {points.map((p) => (
+              <div key={p} className="flex items-start gap-3">
+                <svg className="mt-1 h-5 w-5 flex-shrink-0 text-blue-bright" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 10l4 4 8-9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-base leading-relaxed text-ink">{p}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const socials: { name: string; href: string; path: string; fillRule?: "evenodd" }[] = [
   { name: "Facebook", href: "https://www.facebook.com/p/Al-Bakir-pvtltd-100075875230679/", path: "M13 22v-8h3l1-4h-4V7.5c0-1.1.4-2 2-2h2V2h-3c-3 0-5 1.8-5 5v3H6v4h3v8h4z" },
   { name: "Instagram", href: "https://www.instagram.com/al_bakir_pvt_ltd/", path: "M7 3h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4V7a4 4 0 014-4zm5 5a4 4 0 100 8 4 4 0 000-8zm5-1.5a1 1 0 100 2 1 1 0 000-2z" },
   { name: "YouTube", href: "https://www.youtube.com/@al-bakirstudio?app=desktop", path: "M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15V9l5 3-5 3z" },
   { name: "TikTok", href: "https://www.tiktok.com/@albakirpvtltd", path: "M16 3c.4 2.2 1.8 3.9 4 4.3v3c-1.6 0-3-.4-4.3-1.2v6.4a5.5 5.5 0 11-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.5 2.5 0 102 2.4V3h2.9z" },
+  // Zameen.com: house silhouette with a Z knocked out (evenodd), echoing the brand mark.
+  { name: "Zameen.com", href: "https://www.zameen.com/agents/Islamabad/AL-Bakir-pvt-ltd-196777/", fillRule: "evenodd", path: "M12 2 L22 11 L19 11 L19 22 L5 22 L5 11 L2 11 Z M8 11.5 H16 V12.75 L10.67 18.25 H16 V19.5 H8 V18.25 L13.33 12.75 H8 Z" },
 ];
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mlgyzwdn";
@@ -474,7 +621,6 @@ function Contact() {
     <section id="contact" className="relative bg-bg-elev px-6 py-28 md:py-36">
       <div className="mx-auto max-w-7xl">
         <div className="fade-up mb-16 max-w-2xl">
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">Get in touch</div>
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-6xl">
             Start your project.
           </h2>
@@ -520,7 +666,7 @@ function Contact() {
                     className="glass-light flex h-10 w-10 items-center justify-center rounded-full text-ink hover:-translate-y-0.5 hover:text-blue-bright"
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                      <path d={s.path} />
+                      <path d={s.path} fillRule={s.fillRule} />
                     </svg>
                   </a>
                 ))}
@@ -666,7 +812,7 @@ function Footer() {
                 className="glass-light flex h-9 w-9 items-center justify-center rounded-full text-ink-dim hover:-translate-y-0.5 hover:text-blue-bright"
               >
                 <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
-                  <path d={s.path} />
+                  <path d={s.path} fillRule={s.fillRule} />
                 </svg>
               </a>
             ))}
@@ -712,12 +858,15 @@ function Index() {
         <TrustStrip />
         <Bento />
         <ConstructionServices />
+        <RealEstateServices />
         <Stats />
         <About />
         <VisionMission />
         <CoreValues />
         <WhyChooseApproach />
         <RatingMarquee />
+        <EmapVerification />
+        <InvestorOpportunities />
         <Contact />
       </main>
       <Footer />

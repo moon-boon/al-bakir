@@ -50,7 +50,7 @@ export default function Lightbox({
       </button>
 
       <div className="mb-5 text-center text-sm font-medium uppercase tracking-[0.2em] text-white/70">
-        {title} <span className="text-white/40">— {index + 1} / {images.length}</span>
+        {title} <span className="text-white/40">{index + 1} / {images.length}</span>
       </div>
 
       <div
@@ -74,7 +74,7 @@ export default function Lightbox({
             <motion.img
               key={index}
               src={images[index]}
-              alt={`${title} — photo ${index + 1}`}
+              alt={`${title}, photo ${index + 1}`}
               className="max-h-[75vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl"
               initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

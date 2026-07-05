@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion, useMotionTemplate, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import logoSrc from "@/assets/logo-mark.png";
+
+const Building3DScene = lazy(() => import("./Building3DScene"));
 
 export default function ScrollHero() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -46,6 +48,9 @@ export default function ScrollHero() {
   const blobATranslateY = useTransform(p, [0, 1], reduce ? [0, 0] : [0, -80]);
   const blobBTranslateY = useTransform(p, [0, 1], reduce ? [0, 0] : [0, 60]);
   const blobCTranslateY = useTransform(p, [0, 1], reduce ? [0, 0] : [0, -40]);
+
+  // Skyline recedes as the wordmark and slogan phases take over, so it never fights with text legibility.
+  const skylineOpacity = useTransform(p, [0, 0.45, 0.7], [0.4, 0.16, 0]);
 
   return (
     <div ref={wrapRef} className="relative h-[220vh] w-full" id="top">
@@ -126,6 +131,18 @@ export default function ScrollHero() {
           </motion.div>
         </div>
 
+        {/* 3D building skyline, lazy-loaded so the Three.js bundle never blocks hero LCP.
+            Opacity is scroll-driven (skylineOpacity) so it never fights with slogan legibility. */}
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 mix-blend-screen"
+          style={{ opacity: skylineOpacity }}
+        >
+          <Suspense fallback={null}>
+            <Building3DScene reduced={!!reduce} />
+          </Suspense>
+        </motion.div>
+
         {/* Center stage */}
         <div className="relative z-10 flex h-full w-full items-center justify-center px-6">
           <div className="relative flex flex-col items-center text-center">
@@ -188,7 +205,7 @@ export default function ScrollHero() {
               textShadow: "0 8px 50px rgba(0,0,0,0.55), 0 2px 12px rgba(0,0,0,0.35)",
             }}
           >
-            Where Dreams Become True
+            From blueprint to handover, one trusted team.
           </motion.p>
         </div>
 

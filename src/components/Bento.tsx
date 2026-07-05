@@ -64,15 +64,13 @@ export default function Bento() {
   return (
     <section id="services" className="relative bg-bg-elev px-6 py-28 md:py-36">
       <div className="mx-auto max-w-7xl">
-        <div className="fade-up mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-          <div>
-            <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">What we do</div>
-            <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-6xl">
-              A single studio.<br />
-              <span className="text-ink-dim">Three disciplines.</span>
-            </h2>
-          </div>
-          <p className="max-w-sm text-base leading-relaxed text-ink-dim">
+        <div className="fade-up mb-16 max-w-2xl">
+          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">What we do</div>
+          <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-6xl">
+            A single studio.<br />
+            <span className="text-ink-dim">Three disciplines.</span>
+          </h2>
+          <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-ink-dim">
             Design, construction and real estate under one roof, accountable from first sketch to handover.
           </p>
         </div>
@@ -106,7 +104,7 @@ export default function Bento() {
               to="/gallery/$slug"
               params={{ slug: s.slug }}
               onMouseMove={trackSpotlight}
-              className="fade-up surface-card group relative block cursor-pointer overflow-hidden transition hover:-translate-y-1 hover:shadow-lg md:col-span-4 md:row-span-2"
+              className="fade-up surface-card group relative block cursor-pointer overflow-hidden active:scale-[0.985] transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] md:col-span-4 md:row-span-2"
               style={{ transitionDelay: `${i * 80}ms` }}
             >
               {s.thumb && (
@@ -115,19 +113,19 @@ export default function Bento() {
                     src={s.thumb}
                     alt=""
                     aria-hidden
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
                 </>
               )}
               <div className="spotlight-overlay pointer-events-none opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               <div className="relative flex h-full flex-col justify-between p-8">
-                <div className={`glass-light flex h-16 w-16 items-center justify-center rounded-2xl ${s.accentClass} transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-[6deg]`}>
+                <div className={`glass-light flex h-16 w-16 items-center justify-center rounded-2xl ${s.accentClass} transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 group-hover:rotate-[6deg]`}>
                   {s.icon}
                 </div>
                 <div>
                   <h3 className={`font-display text-2xl font-semibold ${s.thumb ? "text-white" : "text-ink"}`}>{s.title}</h3>
-                  <div className={`my-3 h-0.5 w-8 ${s.underline} transition-all duration-500 group-hover:w-16`} />
+                  <div className={`my-3 h-0.5 w-8 ${s.underline} transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-16`} />
                   <p className={`mt-2 text-sm leading-relaxed ${s.thumb ? "text-white/80" : "text-ink-dim"}`}>{s.desc}</p>
                   <div className={`mt-4 text-xs uppercase tracking-[0.2em] opacity-0 transition group-hover:opacity-100 ${s.thumb ? "text-white/70" : "text-ink-dim"}`}>View gallery →</div>
                 </div>

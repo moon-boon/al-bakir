@@ -29,7 +29,7 @@ const architectureDesignProjects: GalleryProject[] = [
   },
   {
     id: "2-kanal-designer-house",
-    title: "2 Kanal Designer House — Modern Grandeur",
+    title: "2 Kanal Designer House, Modern Grandeur",
     images: [estateImage1, estateImage2, estateImage3],
   },
   {

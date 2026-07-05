@@ -1,9 +1,17 @@
-import { useRef, type ComponentPropsWithoutRef, type ElementType } from "react";
+import type { ComponentPropsWithoutRef, ElementType } from "react";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 
 type Props<T extends ElementType> = {
   as?: T;
   strength?: number;
 } & ComponentPropsWithoutRef<T>;
+
+const springConfig = { stiffness: 300, damping: 22, mass: 0.4 };
+
+const MOTION_TAGS = {
+  a: motion.a,
+  button: motion.button,
+} as const;
 
 export default function MagneticButton<T extends ElementType = "a">({
   as,
@@ -13,35 +21,36 @@ export default function MagneticButton<T extends ElementType = "a">({
   onMouseLeave,
   ...rest
 }: Props<T>) {
-  const Tag = (as || "a") as ElementType;
-  const ref = useRef<HTMLElement>(null);
-  const reduced =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const touch =
-    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
-  const enabled = !reduced && !touch;
+  const tagName = (as || "a") as keyof typeof MOTION_TAGS;
+  const MotionTag = MOTION_TAGS[tagName] ?? motion.a;
+  const reduce = useReducedMotion();
+  const touch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+  const enabled = !reduce && !touch;
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
 
   return (
-    <Tag
-      ref={ref}
-      {...rest}
+    <MotionTag
+      {...(rest as object)}
+      style={{ x: springX, y: springY, ...(rest as { style?: React.CSSProperties }).style }}
+      whileTap={enabled ? { scale: 0.96 } : undefined}
       onMouseMove={(e: React.MouseEvent<HTMLElement>) => {
         onMouseMove?.(e);
-        if (!enabled || !ref.current) return;
-        const r = ref.current.getBoundingClientRect();
-        const x = e.clientX - (r.left + r.width / 2);
-        const y = e.clientY - (r.top + r.height / 2);
-        ref.current.style.transform = `translate3d(${(x / r.width) * strength}px, ${(y / r.height) * strength}px, 0)`;
+        if (!enabled) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        x.set(((e.clientX - (r.left + r.width / 2)) / r.width) * strength);
+        y.set(((e.clientY - (r.top + r.height / 2)) / r.height) * strength);
       }}
       onMouseLeave={(e: React.MouseEvent<HTMLElement>) => {
         onMouseLeave?.(e);
-        if (!ref.current) return;
-        ref.current.style.transform = "";
+        x.set(0);
+        y.set(0);
       }}
-      style={{ transition: "transform 0.35s cubic-bezier(.2,.8,.2,1)", ...(rest as { style?: React.CSSProperties }).style }}
     >
       {children}
-    </Tag>
+    </MotionTag>
   );
 }

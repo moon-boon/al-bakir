@@ -69,9 +69,9 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
 
     const particleCount = Math.min(70, Math.floor((w * h) / 24000));
     const accentColors = [
-      "rgba(29,29,31,0.32)",
-      "rgba(29,29,31,0.28)",
-      "rgba(29,29,31,0.22)",
+      "rgba(21,23,28,0.30)",
+      "rgba(21,23,28,0.26)",
+      "rgba(21,23,28,0.20)",
       "rgba(10,132,255,0.30)",
       "rgba(48,209,88,0.28)",
       "rgba(255,159,10,0.28)",
@@ -124,7 +124,7 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
           const dx = a.x - b.x, dy = a.y - b.y;
           const d2 = dx * dx + dy * dy;
           if (d2 < 120 * 120) {
-            ctx.strokeStyle = `rgba(29,29,31,${0.10 * (1 - d2 / (120 * 120))})`;
+            ctx.strokeStyle = `rgba(21,23,28,${0.10 * (1 - d2 / (120 * 120))})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -192,7 +192,7 @@ export default function BackgroundCanvas({ logoSrc }: { logoSrc: string }) {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10 h-full w-full"
-      style={{ background: "#ffffff" }}
+      style={{ background: "#fcfcfd" }}
       aria-hidden
     />
   );
