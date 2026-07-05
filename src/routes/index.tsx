@@ -443,25 +443,31 @@ const socials = [
   { name: "TikTok", href: "https://www.tiktok.com/@albakirpvtltd", path: "M16 3c.4 2.2 1.8 3.9 4 4.3v3c-1.6 0-3-.4-4.3-1.2v6.4a5.5 5.5 0 11-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.5 2.5 0 102 2.4V3h2.9z" },
 ];
 
-const ENQUIRY_EMAIL = "Bakirassociates@gmail.com";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mlgyzwdn";
 
 function Contact() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [form, setForm] = useState({ name: "", phone: "", email: "", projectType: "Architecture", message: "" });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const subject = `New enquiry from ${form.name} — ${form.projectType}`;
-    const body = [
-      `Name: ${form.name}`,
-      `Phone: ${form.phone}`,
-      `Email: ${form.email}`,
-      `Project type: ${form.projectType}`,
-      "",
-      form.message,
-    ].join("\n");
-    window.location.href = `mailto:${ENQUIRY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setStatus("sending");
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          projectType: form.projectType,
+          message: form.message,
+        }),
+      });
+      setStatus(res.ok ? "sent" : "error");
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -556,14 +562,14 @@ function Contact() {
             onSubmit={handleSubmit}
             className="fade-up space-y-5 surface-card p-8"
           >
-            {sent ? (
+            {status === "sent" ? (
               <div className="flex min-h-[480px] flex-col items-center justify-center text-center">
                 <svg viewBox="0 0 64 64" className="mb-6 h-20 w-20 text-green" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="32" cy="32" r="28" strokeDasharray="180" strokeDashoffset="0" style={{ animation: "draw 0.7s ease forwards" }} />
                   <path d="M20 33l8 8 16-18" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <h3 className="mb-2 font-display text-3xl font-semibold text-ink">Enquiry received</h3>
-                <p className="text-ink-dim">Your email client should have opened with the enquiry ready to send. We will be in touch within 24 hours.</p>
+                <p className="text-ink-dim">Thanks, {form.name.split(" ")[0]}. We will be in touch within 24 hours.</p>
               </div>
             ) : (
               <>
@@ -611,8 +617,19 @@ function Contact() {
                     className="w-full resize-none rounded-xl border border-black/10 bg-white px-4 py-3 text-ink outline-none focus:border-blue-bright focus:ring-2 focus:ring-blue/20"
                   />
                 </div>
-                <MagneticButton as="button" type="submit" className="btn-primary w-full">
-                  Send Enquiry
+                {status === "error" && (
+                  <p className="text-sm text-orange">
+                    Something went wrong sending your enquiry. Please try again, or email us directly at{" "}
+                    <a href="mailto:Bakirassociates@gmail.com" className="underline">Bakirassociates@gmail.com</a>.
+                  </p>
+                )}
+                <MagneticButton
+                  as="button"
+                  type="submit"
+                  disabled={status === "sending"}
+                  className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {status === "sending" ? "Sending…" : "Send Enquiry"}
                 </MagneticButton>
               </>
             )}
