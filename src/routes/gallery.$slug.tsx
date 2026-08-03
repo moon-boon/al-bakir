@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 import Lightbox from "@/components/Lightbox";
@@ -46,7 +46,16 @@ export const Route = createFileRoute("/gallery/$slug")({
 
 function GalleryPage() {
   const { slug } = Route.useParams();
+  const router = useRouter();
   const d = DISCIPLINES[slug];
+
+  const goBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.history.back();
+    } else {
+      router.navigate({ to: "/" });
+    }
+  };
   const storageKey = `gallery:${slug}`;
   const projects = galleryProjects[slug] ?? [];
 
@@ -72,7 +81,7 @@ function GalleryPage() {
   return (
     <main className="min-h-screen bg-bg px-6 py-16 md:py-24">
       <div className="mx-auto max-w-7xl">
-        <Link to="/" className="text-sm text-ink-dim hover:text-ink">← Back home</Link>
+        <button type="button" onClick={goBack} className="text-sm text-ink-dim hover:text-ink">← Back</button>
 
         <header className="mt-8 mb-12 flex flex-col items-start justify-between gap-6 md:mb-16 md:flex-row md:items-end">
           <div>
@@ -101,7 +110,7 @@ function GalleryPage() {
                     <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
                     </svg>
-                    {p.images.length} photos
+                    {p.images.length} {p.images.length === 1 ? "photo" : "photos"}
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <span className="glass-dark flex h-12 w-12 items-center justify-center rounded-full text-white transition-transform duration-300 group-hover:scale-110">
@@ -113,7 +122,9 @@ function GalleryPage() {
                 </div>
                 <div className="p-6">
                   <h3 className="font-display text-xl font-semibold text-ink">{p.title}</h3>
-                  <div className="mt-2 text-xs uppercase tracking-[0.2em] text-ink-dim opacity-0 transition group-hover:opacity-100">View photos →</div>
+                  {p.caption && <div className={`mt-1 text-sm font-medium ${d.accent}`}>{p.caption}</div>}
+                  {p.description && <p className="mt-2 text-sm leading-relaxed text-ink-dim">{p.description}</p>}
+                  <div className="mt-3 text-xs uppercase tracking-[0.2em] text-ink-dim opacity-0 transition group-hover:opacity-100">View photos →</div>
                 </div>
               </button>
             ))}

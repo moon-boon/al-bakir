@@ -1,9 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import architectureDesignThumb from "@/assets/architecture-design-thumb.png";
 import constructionThumb from "@/assets/construction-thumb.jpg";
+import realEstateThumb from "@/assets/real-estate-thumb.jpg";
 import { trackSpotlight } from "@/lib/utils";
+import CurtainImage from "./CurtainImage";
 import LocalTime from "./LocalTime";
 import Marquee from "./Marquee";
+import RevealHeading from "./RevealHeading";
 
 const services = [
   {
@@ -40,6 +43,7 @@ const services = [
     desc: "Curated property opportunities across B-17 Islamabad and surrounding sectors.",
     accentClass: "text-green",
     underline: "bg-green",
+    thumb: realEstateThumb,
     icon: (
       <svg viewBox="0 0 64 64" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="1.4">
         <circle cx="22" cy="32" r="8" />
@@ -64,13 +68,12 @@ export default function Bento() {
   return (
     <section id="services" className="relative bg-bg-elev px-6 py-28 md:py-36">
       <div className="mx-auto max-w-7xl">
-        <div className="fade-up mb-16 max-w-2xl">
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">What we do</div>
+        <div className="mb-16 max-w-2xl">
+          <div className="fade-up mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">What we do</div>
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-6xl">
-            A single studio.<br />
-            <span className="text-ink-dim">Three disciplines.</span>
+            <RevealHeading lines={[{ text: "A single studio." }, { text: "Three disciplines.", dim: true }]} />
           </h2>
-          <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-ink-dim">
+          <p className="fade-up mt-5 max-w-[65ch] text-base leading-relaxed text-ink-dim">
             Design, construction and real estate under one roof, accountable from first sketch to handover.
           </p>
         </div>
@@ -104,22 +107,15 @@ export default function Bento() {
               to="/gallery/$slug"
               params={{ slug: s.slug }}
               onMouseMove={trackSpotlight}
-              className="fade-up surface-card group relative block cursor-pointer overflow-hidden active:scale-[0.985] transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] md:col-span-4 md:row-span-2"
-              style={{ transitionDelay: `${i * 80}ms` }}
+              className="surface-card group relative block cursor-pointer overflow-hidden active:scale-[0.985] transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] md:col-span-4 md:row-span-2"
             >
               {s.thumb && (
-                <>
-                  <img
-                    src={s.thumb}
-                    alt=""
-                    aria-hidden
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-                  />
+                <CurtainImage src={s.thumb} delay={i * 0.14}>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
-                </>
+                </CurtainImage>
               )}
               <div className="spotlight-overlay pointer-events-none opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              <div className="relative flex h-full flex-col justify-between p-8">
+              <div className="fade-up relative flex h-full flex-col justify-between p-8" style={{ transitionDelay: `${i * 140 + 250}ms` }}>
                 <div className={`glass-light flex h-16 w-16 items-center justify-center rounded-2xl ${s.accentClass} transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 group-hover:rotate-[6deg]`}>
                   {s.icon}
                 </div>

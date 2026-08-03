@@ -1,15 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import BackgroundCanvas from "@/components/BackgroundCanvas";
 import Bento from "@/components/Bento";
 import MagneticButton from "@/components/MagneticButton";
 import Marquee from "@/components/Marquee";
 import Counter from "@/components/Counter";
-import ScrollHero from "@/components/ScrollHero";
+import RevealHeading from "@/components/RevealHeading";
+import ScrollVideoHero from "@/components/ScrollVideoHero";
 import { useOpenStatus } from "@/hooks/use-open-status";
 import logoMarkSrc from "@/assets/logo-mark.png";
 import logoSrc from "@/assets/logo.png";
+import fidaUrRehmanSrc from "@/assets/leader-2.jpg";
+import atiqUrRehmanSrc from "@/assets/leader-1.jpg";
+import ehsanFraziSrc from "@/assets/leader-3.jpg";
+import dilawarAzizSrc from "@/assets/leader-4.jpg";
 
 
 
@@ -37,7 +42,9 @@ function useReveal() {
           }
         });
       },
-      { threshold: 0.12 }
+      // Trigger a little before the element reaches the viewport edge so the
+      // reveal finishes settling as it arrives, instead of animating in late.
+      { threshold: 0.01, rootMargin: "0px 0px -8% 0px" }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
@@ -47,64 +54,152 @@ function useReveal() {
 function Nav() {
   const [open, setOpen] = useState(false);
   const { isOpen } = useOpenStatus();
+  const reduce = useReducedMotion();
   const links = [
     { href: "#services", label: "Services" },
     { href: "#values", label: "Values" },
     { href: "#about", label: "About" },
     { href: "#contact", label: "Contact" },
   ];
+
+  // Lock body scroll while the mobile menu is open.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   return (
-    <header
-      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/40 text-white backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300"
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="#top" className="flex items-center gap-3">
-          <img src={logoMarkSrc} alt="Al Bakir" className="h-9 w-14 object-contain" />
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-base font-semibold tracking-tight text-white">Al Bakir</span>
-            <span className="text-[10px] tracking-[0.2em] text-white/70">PVT · LTD</span>
-          </div>
-        </a>
-        <nav className="hidden items-center gap-8 md:flex">
-          {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm font-medium text-white/80 transition-colors hover:text-white">
-              {l.label}
-            </a>
-          ))}
-          <span className="glass-dark ml-2 flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium text-white">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-70 ${isOpen ? "bg-green" : "bg-orange"}`} />
-              <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${isOpen ? "bg-green" : "bg-orange"}`} />
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/40 text-white backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-6">
+          <a href="#top" className="flex items-center gap-3">
+            <img src={logoMarkSrc} alt="Al Bakir" className="h-8 w-12 object-contain sm:h-9 sm:w-14" />
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-base font-semibold tracking-tight text-white">Al Bakir</span>
+              <span className="text-[10px] tracking-[0.2em] text-white/70">PVT · LTD</span>
+            </div>
+          </a>
+          <nav className="hidden items-center gap-8 md:flex">
+            {links.map((l) => (
+              <a key={l.href} href={l.href} className="text-sm font-medium text-white/80 transition-colors hover:text-white">
+                {l.label}
+              </a>
+            ))}
+            <span className="glass-dark ml-2 flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium text-white">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-70 ${isOpen ? "bg-green" : "bg-orange"}`} />
+                <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${isOpen ? "bg-green" : "bg-orange"}`} />
+              </span>
+              {isOpen ? "Open now" : "Closed now"}
             </span>
-            {isOpen ? "Open now" : "Closed now"}
-          </span>
-        </nav>
-        <button
-          aria-label="Menu"
-          onClick={() => setOpen((v) => !v)}
-          className="glass-dark flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl md:hidden"
-        >
-          <span className={`block h-px w-6 bg-white transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block h-px w-6 bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`block h-px w-6 bg-white transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
-        </button>
-      </div>
-      {open && (
-        <div className="fixed inset-0 top-0 z-40 flex flex-col items-center justify-center gap-8 bg-black/95 backdrop-blur-xl md:hidden">
-          {links.map((l, i) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="font-display text-4xl font-semibold text-white"
-              style={{ animation: `fadeUp 0.4s ${i * 0.08}s both` }}
-            >
-              {l.label}
-            </a>
-          ))}
+          </nav>
+          <button
+            aria-label="Open menu"
+            aria-expanded={open}
+            onClick={() => setOpen(true)}
+            className="glass-dark flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl md:hidden"
+          >
+            <span className="block h-px w-6 bg-white" />
+            <span className="block h-px w-6 bg-white" />
+            <span className="block h-px w-6 bg-white" />
+          </button>
         </div>
-      )}
-    </header>
+      </header>
+
+      {/* Full-screen mobile menu. Rendered OUTSIDE the header so the header's
+          backdrop-filter does not become its containing block (that bug trapped
+          the old overlay inside the thin top bar). */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="fixed inset-0 z-[60] flex flex-col md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Solid premium backdrop matching the hero */}
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 90% 55% at 25% 15%, rgba(99,52,201,0.5), transparent 60%)," +
+                  "radial-gradient(ellipse 80% 55% at 85% 25%, rgba(255,159,10,0.28), transparent 60%)," +
+                  "linear-gradient(180deg, #0a0f28 0%, #1a1042 60%, #2a1654 100%)",
+              }}
+            />
+
+            <div className="relative flex h-full flex-col">
+              {/* Menu top bar with logo + close */}
+              <div className="flex items-center justify-between px-5 py-4">
+                <div className="flex items-center gap-3">
+                  <img src={logoMarkSrc} alt="Al Bakir" className="h-8 w-12 object-contain" />
+                  <span className="font-display text-base font-semibold tracking-tight text-white">Al Bakir</span>
+                </div>
+                <button
+                  aria-label="Close menu"
+                  onClick={() => setOpen(false)}
+                  className="glass-dark flex h-10 w-10 items-center justify-center rounded-xl text-white"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Links */}
+              <nav className="flex flex-1 flex-col justify-center px-6">
+                {links.map((l, i) => (
+                  <motion.a
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-between border-b border-white/10 py-5 font-display text-3xl font-semibold text-white transition-colors active:text-white/60"
+                    initial={reduce ? false : { opacity: 0, y: 24, filter: "blur(6px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ duration: 0.5, delay: reduce ? 0 : 0.12 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    {l.label}
+                    <svg viewBox="0 0 24 24" className="h-6 w-6 text-white/30" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </motion.a>
+                ))}
+              </nav>
+
+              {/* Footer: live status + primary CTA */}
+              <motion.div
+                className="space-y-5 px-6 pb-10"
+                initial={reduce ? false : { opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: reduce ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="flex items-center gap-2 text-sm font-medium text-white/80">
+                  <span className="relative flex h-2 w-2">
+                    <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-70 ${isOpen ? "bg-green" : "bg-orange"}`} />
+                    <span className={`relative inline-flex h-2 w-2 rounded-full ${isOpen ? "bg-green" : "bg-orange"}`} />
+                  </span>
+                  {isOpen ? "Open now" : "Closed now"}
+                  <span className="text-white/40">· B-17 Islamabad</span>
+                </div>
+                <a
+                  href="#contact"
+                  onClick={() => setOpen(false)}
+                  className="flex w-full items-center justify-center rounded-full bg-white px-6 py-4 font-display text-base font-semibold text-ink transition-transform active:scale-[0.98]"
+                >
+                  Start your project
+                </a>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -180,10 +275,9 @@ function ConstructionServices() {
   return (
     <section id="construction-services" className="relative bg-bg px-6 py-24 md:py-32">
       <div className="mx-auto max-w-7xl">
-        <div className="fade-up mb-14 max-w-2xl">
+        <div className="mb-14 max-w-2xl">
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
-            Construction,<br />
-            <span className="text-ink-dim">covered end to end.</span>
+            <RevealHeading lines={[{ text: "Construction," }, { text: "covered end to end.", dim: true }]} />
           </h2>
         </div>
         <motion.div
@@ -197,8 +291,8 @@ function ConstructionServices() {
             <motion.div
               key={g.title}
               variants={{
-                hidden: { opacity: 0, y: 20 },
-                shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+                hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
+                shown: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
               }}
             >
               <div className={`mb-5 h-0.5 w-10 ${g.accentBar}`} />
@@ -226,11 +320,11 @@ function RealEstateServices() {
   return (
     <section id="real-estate-services" className="relative bg-bg-elev px-6 py-24 md:py-32">
       <div className="mx-auto max-w-7xl">
-        <div className="fade-up mb-14 max-w-2xl">
+        <div className="mb-14 max-w-2xl">
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
-            Real estate services.
+            <RevealHeading lines={[{ text: "Real estate services." }]} />
           </h2>
-          <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-ink-dim">
+          <p className="fade-up mt-5 max-w-[65ch] text-base leading-relaxed text-ink-dim">
             Our professional real estate team provides reliable consultancy and investment solutions,
             including dedicated support for overseas investment.
           </p>
@@ -246,8 +340,8 @@ function RealEstateServices() {
             <motion.div
               key={g.title}
               variants={{
-                hidden: { opacity: 0, y: 20 },
-                shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+                hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
+                shown: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
               }}
             >
               <div className={`mb-5 h-0.5 w-10 ${g.accentBar}`} />
@@ -280,9 +374,9 @@ function Stats() {
   return (
     <section className="relative bg-bg px-6 py-24 md:py-32">
       <div className="mx-auto max-w-7xl">
-        <div className="fade-up mb-14 max-w-2xl">
+        <div className="mb-14 max-w-2xl">
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
-            A decade of building, measured.
+            <RevealHeading lines={[{ text: "A decade of building, measured." }]} />
           </h2>
         </div>
         <div className="grid grid-cols-2 divide-x divide-y divide-black/10 border-y border-black/10 md:grid-cols-4 md:divide-y-0">
@@ -304,17 +398,17 @@ function About() {
   return (
     <section id="about" className="relative bg-bg px-6 py-28 md:py-36">
       <div className="mx-auto max-w-7xl">
-        <div className="fade-up max-w-3xl">
-          <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">About the studio</div>
+        <div className="max-w-3xl">
+          <div className="fade-up mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-ink-dim">About the studio</div>
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-6xl">
-            Where dreams<br />become true.
+            <RevealHeading lines={[{ text: "Where dreams" }, { text: "become true." }]} />
           </h2>
-          <p className="mt-8 text-xl leading-relaxed text-ink">
+          <p className="fade-up mt-8 text-xl leading-relaxed text-ink">
             Al Bakir Pvt Ltd is an Islamabad based practice working at the intersection of architecture,
             construction, engineering, interior design and real estate. We build from first principles,
             with a single team accountable from the first sketch to the final handover.
           </p>
-          <p className="mt-6 max-w-[65ch] text-base leading-relaxed text-ink-dim">
+          <p className="fade-up mt-6 max-w-[65ch] text-base leading-relaxed text-ink-dim">
             Our work is shaped by Pakistani context, modern construction discipline and a refusal to
             compromise on detail. Open 24 hours a day, every day except Friday.
           </p>
@@ -406,8 +500,8 @@ function CoreValues() {
               key={v.name}
               className="surface-card p-7"
               variants={{
-                hidden: { opacity: 0, y: 24 },
-                shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+                hidden: { opacity: 0, y: 24, filter: "blur(10px)" },
+                shown: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
               }}
             >
               <div className="mb-5 font-display text-sm font-medium tabular-nums text-ink-soft">
@@ -416,6 +510,79 @@ function CoreValues() {
               <div className="font-display text-xl font-semibold text-ink">{v.name}</div>
               <p className="mt-2 text-sm leading-relaxed text-ink-dim">{v.desc}</p>
             </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+const leaders: { name: string; role: string; img: string; desc?: string }[] = [
+  {
+    name: "Fida-ur-Rehman",
+    role: "Chief Executive Officer",
+    img: fidaUrRehmanSrc,
+    desc: "Provides strategic leadership and oversees business growth, project execution, corporate planning, and organizational development.",
+  },
+  {
+    name: "Dilawar Aziz",
+    role: "Marketing & Sales Head",
+    img: dilawarAzizSrc,
+    desc: "Leads marketing strategy, branding, business development, digital marketing, client relations, and project sales.",
+  },
+  {
+    name: "Ehsan Frazi",
+    role: "Principal Architect",
+    img: ehsanFraziSrc,
+    desc: "Heads the architectural and design department, leading concept development and engineering coordination.",
+  },
+  {
+    name: "Atiq-ur-Rehman",
+    role: "Construction Head",
+    img: atiqUrRehmanSrc,
+    desc: "Supervises all on-site operations, ensuring projects meet the highest standards of quality, safety, and efficiency.",
+  },
+];
+
+function Leadership() {
+  const reduce = useReducedMotion();
+  return (
+    <section id="leadership" className="relative bg-bg px-6 py-24 md:py-32">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-14 max-w-2xl">
+          <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
+            <RevealHeading lines={[{ text: "The team behind" }, { text: "every project.", dim: true }]} />
+          </h2>
+        </div>
+        <motion.div
+          className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4"
+          initial={reduce ? "shown" : "hidden"}
+          whileInView="shown"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{ hidden: {}, shown: { transition: { staggerChildren: 0.12 } } }}
+        >
+          {leaders.map((m) => (
+            <motion.figure
+              key={m.name}
+              className="surface-card group flex flex-col overflow-hidden"
+              variants={{
+                hidden: { opacity: 0, y: 24, filter: "blur(10px)" },
+                shown: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+              }}
+            >
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-bg-elev">
+                <img
+                  src={m.img}
+                  alt={`${m.name}, ${m.role} at Al Bakir`}
+                  className="h-full w-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                />
+              </div>
+              <figcaption className="p-6">
+                <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-orange">{m.role}</div>
+                <div className="font-display text-xl font-semibold text-ink">{m.name}</div>
+                {m.desc && <p className="mt-3 text-sm leading-relaxed text-ink-dim">{m.desc}</p>}
+              </figcaption>
+            </motion.figure>
           ))}
         </motion.div>
       </div>
@@ -620,9 +787,9 @@ function Contact() {
   return (
     <section id="contact" className="relative bg-bg-elev px-6 py-28 md:py-36">
       <div className="mx-auto max-w-7xl">
-        <div className="fade-up mb-16 max-w-2xl">
+        <div className="mb-16 max-w-2xl">
           <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-6xl">
-            Start your project.
+            <RevealHeading lines={[{ text: "Start your project." }]} />
           </h2>
         </div>
 
@@ -854,7 +1021,7 @@ function Index() {
       <BackgroundCanvas logoSrc={logoSrc} />
       <Nav />
       <main>
-        <ScrollHero />
+        <ScrollVideoHero />
         <TrustStrip />
         <Bento />
         <ConstructionServices />
@@ -863,6 +1030,7 @@ function Index() {
         <About />
         <VisionMission />
         <CoreValues />
+        <Leadership />
         <WhyChooseApproach />
         <RatingMarquee />
         <EmapVerification />

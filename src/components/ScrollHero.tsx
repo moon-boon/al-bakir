@@ -79,6 +79,16 @@ export default function ScrollHero() {
             maskImage: "radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%)",
           }}
         />
+        {/* Static film-grain texture (SVG fractalNoise) - no animation, so no repaint cost */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            backgroundSize: "180px 180px",
+          }}
+        />
         {/* Particles (CSS only, paused under reduced motion) */}
         <div aria-hidden className="absolute inset-0">
           {Array.from({ length: 24 }).map((_, i) => (
@@ -171,7 +181,7 @@ export default function ScrollHero() {
                 alt="Al Bakir"
                 className="relative h-full w-full object-contain"
                 style={{
-                  animation: "heroIn 1s 0.1s ease-out both",
+                  animation: reduce ? "none" : "heroIn 1.5s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both",
                   filter: "drop-shadow(0 6px 24px rgba(0,0,0,0.45)) brightness(1.05)",
                 }}
               />
@@ -186,6 +196,9 @@ export default function ScrollHero() {
                 y: nameTranslateY,
                 scale: nameScale,
                 filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.45))",
+                animation: reduce
+                  ? "none"
+                  : "nameIn 1.1s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both, text-flash-shift 0.8s linear infinite",
               }}
             >
               AL BAKIR
@@ -225,8 +238,12 @@ export default function ScrollHero() {
 
       <style>{`
         @keyframes heroIn {
-          from { opacity: 0; transform: translateY(20px) scale(0.96); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
+          from { opacity: 0; transform: translateY(26px) scale(1.32); filter: blur(22px) drop-shadow(0 6px 24px rgba(0,0,0,0.45)) brightness(1.05); }
+          to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px) drop-shadow(0 6px 24px rgba(0,0,0,0.45)) brightness(1.05); }
+        }
+        @keyframes nameIn {
+          from { letter-spacing: 0.38em; filter: blur(12px) drop-shadow(0 4px 24px rgba(0,0,0,0.45)); }
+          to { letter-spacing: 0.18em; filter: blur(0px) drop-shadow(0 4px 24px rgba(0,0,0,0.45)); }
         }
         @keyframes floaty {
           from { transform: translateY(0); }

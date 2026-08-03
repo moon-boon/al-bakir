@@ -123,11 +123,18 @@
   &:active { transform: translateY(0) scale(0.97); transition-duration: 0.12s; }
 }
 
+/* transform + opacity only (GPU-compositor-cheap, no paint/filter cost) so
+   scrolling past many of these at once never drops frames. */
 @utility fade-up {
   opacity: 0;
-  transform: translateY(24px) scale(0.98);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  &.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  &.is-visible { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up { opacity: 1; transform: none; filter: none; transition: none; }
 }
 
 @utility surface-card {
