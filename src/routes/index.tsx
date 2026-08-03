@@ -1,20 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import BackgroundCanvas from "@/components/BackgroundCanvas";
-import Bento from "@/components/Bento";
 import MagneticButton from "@/components/MagneticButton";
 import Marquee from "@/components/Marquee";
 import Counter from "@/components/Counter";
 import RevealHeading from "@/components/RevealHeading";
 import ScrollVideoHero from "@/components/ScrollVideoHero";
+import LazyImage from "@/components/LazyImage";
 import { useOpenStatus } from "@/hooks/use-open-status";
 import logoMarkSrc from "@/assets/logo-mark.png";
 import logoSrc from "@/assets/logo.png";
-import fidaUrRehmanSrc from "@/assets/leader-2.jpg";
-import atiqUrRehmanSrc from "@/assets/leader-1.jpg";
-import ehsanFraziSrc from "@/assets/leader-3.jpg";
-import dilawarAzizSrc from "@/assets/leader-4.jpg";
+
+// Lazy load heavy components
+const Bento = lazy(() => import("@/components/Bento"));
+const LazyLeadership = lazy(() => import("@/components/Leadership"));
+
+// Loading fallback
+const ComponentFallback = () => <div className="h-96 bg-gray-100 animate-pulse" />;
 
 
 
@@ -77,7 +80,7 @@ function Nav() {
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/40 text-white backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-6">
           <a href="#top" className="flex items-center gap-3">
-            <img src={logoMarkSrc} alt="Al Bakir" className="h-8 w-12 object-contain sm:h-9 sm:w-14" />
+            <LazyImage src={logoMarkSrc} alt="Al Bakir" className="h-8 w-12 object-contain sm:h-9 sm:w-14" width={56} height={36} loading="eager" />
             <div className="flex items-baseline gap-2">
               <span className="font-display text-base font-semibold tracking-tight text-white">Al Bakir</span>
               <span className="text-[10px] tracking-[0.2em] text-white/70">PVT · LTD</span>
@@ -138,7 +141,7 @@ function Nav() {
               {/* Menu top bar with logo + close */}
               <div className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <img src={logoMarkSrc} alt="Al Bakir" className="h-8 w-12 object-contain" />
+                  <LazyImage src={logoMarkSrc} alt="Al Bakir" className="h-8 w-12 object-contain" width={48} height={32} loading="eager" />
                   <span className="font-display text-base font-semibold tracking-tight text-white">Al Bakir</span>
                 </div>
                 <button
@@ -517,78 +520,6 @@ function CoreValues() {
   );
 }
 
-const leaders: { name: string; role: string; img: string; desc?: string }[] = [
-  {
-    name: "Fida-ur-Rehman",
-    role: "Chief Executive Officer",
-    img: fidaUrRehmanSrc,
-    desc: "Provides strategic leadership and oversees business growth, project execution, corporate planning, and organizational development.",
-  },
-  {
-    name: "Dilawar Aziz",
-    role: "Marketing & Sales Head",
-    img: dilawarAzizSrc,
-    desc: "Leads marketing strategy, branding, business development, digital marketing, client relations, and project sales.",
-  },
-  {
-    name: "Ehsan Frazi",
-    role: "Principal Architect",
-    img: ehsanFraziSrc,
-    desc: "Heads the architectural and design department, leading concept development and engineering coordination.",
-  },
-  {
-    name: "Atiq-ur-Rehman",
-    role: "Construction Head",
-    img: atiqUrRehmanSrc,
-    desc: "Supervises all on-site operations, ensuring projects meet the highest standards of quality, safety, and efficiency.",
-  },
-];
-
-function Leadership() {
-  const reduce = useReducedMotion();
-  return (
-    <section id="leadership" className="relative bg-bg px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-14 max-w-2xl">
-          <h2 className="font-display text-4xl font-semibold leading-[1.05] text-ink md:text-5xl">
-            <RevealHeading lines={[{ text: "The team behind" }, { text: "every project.", dim: true }]} />
-          </h2>
-        </div>
-        <motion.div
-          className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4"
-          initial={reduce ? "shown" : "hidden"}
-          whileInView="shown"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={{ hidden: {}, shown: { transition: { staggerChildren: 0.12 } } }}
-        >
-          {leaders.map((m) => (
-            <motion.figure
-              key={m.name}
-              className="surface-card group flex flex-col overflow-hidden"
-              variants={{
-                hidden: { opacity: 0, y: 24, filter: "blur(10px)" },
-                shown: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
-              }}
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-bg-elev">
-                <img
-                  src={m.img}
-                  alt={`${m.name}, ${m.role} at Al Bakir`}
-                  className="h-full w-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-                />
-              </div>
-              <figcaption className="p-6">
-                <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-orange">{m.role}</div>
-                <div className="font-display text-xl font-semibold text-ink">{m.name}</div>
-                {m.desc && <p className="mt-3 text-sm leading-relaxed text-ink-dim">{m.desc}</p>}
-              </figcaption>
-            </motion.figure>
-          ))}
-        </motion.div>
-      </div>
-    </section>
-  );
-}
 
 function WhyChooseApproach() {
   const reasons = [
@@ -959,7 +890,7 @@ function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-3">
-            <img src={logoMarkSrc} alt="" className="h-10 w-16 object-contain" />
+            <LazyImage src={logoMarkSrc} alt="" className="h-10 w-16 object-contain" width={64} height={40} loading="eager" />
             <div>
               <div className="font-display text-base font-semibold text-ink">Al Bakir</div>
               <div className="text-[10px] tracking-[0.2em] text-ink-soft">PVT · LTD</div>
@@ -1023,14 +954,18 @@ function Index() {
       <main>
         <ScrollVideoHero />
         <TrustStrip />
-        <Bento />
+        <Suspense fallback={<ComponentFallback />}>
+          <Bento />
+        </Suspense>
         <ConstructionServices />
         <RealEstateServices />
         <Stats />
         <About />
         <VisionMission />
         <CoreValues />
-        <Leadership />
+        <Suspense fallback={<ComponentFallback />}>
+          <LazyLeadership />
+        </Suspense>
         <WhyChooseApproach />
         <RatingMarquee />
         <EmapVerification />

@@ -12,4 +12,42 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    build: {
+      // Optimize chunk sizes and code splitting
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Split motion/animation library
+            motion: ["motion/react"],
+            // Split heavy components
+            components: ["@/components/Bento", "@/components/Leadership"],
+            // Split radix UI
+            radix: ["@radix-ui/react-accordion", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu"],
+            // Split Three.js
+            three: ["three"],
+          },
+        },
+      },
+      // Increase chunk size warning threshold
+      chunkSizeWarningLimit: 1000,
+      // Enable minification
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          drop_console: true,
+        },
+      },
+    },
+    // Optimize dependencies
+    optimizeDeps: {
+      include: [
+        "react",
+        "react-dom",
+        "motion/react",
+        "@radix-ui/react-accordion",
+        "@radix-ui/react-dialog",
+      ],
+    },
+  },
 });
