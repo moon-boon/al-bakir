@@ -9,6 +9,7 @@ import RevealHeading from "@/components/RevealHeading";
 import ScrollVideoHero from "@/components/ScrollVideoHero";
 import LazyImage from "@/components/LazyImage";
 import { useOpenStatus } from "@/hooks/use-open-status";
+import { submitInquiry } from "@/lib/supabase";
 import logoMarkSrc from "@/assets/logo-mark.png";
 import logoSrc from "@/assets/logo.png";
 
@@ -688,8 +689,6 @@ const socials: { name: string; href: string; path: string; fillRule?: "evenodd" 
   { name: "Zameen.com", href: "https://www.zameen.com/agents/Islamabad/AL-Bakir-pvt-ltd-196777/", fillRule: "evenodd", path: "M12 2 L22 11 L19 11 L19 22 L5 22 L5 11 L2 11 Z M8 11.5 H16 V12.75 L10.67 18.25 H16 V19.5 H8 V18.25 L13.33 12.75 H8 Z" },
 ];
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/mlgyzwdn";
-
 function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [form, setForm] = useState({ name: "", phone: "", email: "", projectType: "Architecture", message: "" });
@@ -698,18 +697,15 @@ function Contact() {
     e.preventDefault();
     setStatus("sending");
     try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: { Accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
-          projectType: form.projectType,
-          message: form.message,
-        }),
+      await submitInquiry({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        projectType: form.projectType,
+        message: form.message,
       });
-      setStatus(res.ok ? "sent" : "error");
+      setStatus("sent");
+      setForm({ name: "", phone: "", email: "", projectType: "Architecture", message: "" });
     } catch {
       setStatus("error");
     }
