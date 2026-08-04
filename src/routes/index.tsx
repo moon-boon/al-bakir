@@ -706,7 +706,8 @@ function Contact() {
       });
       setStatus("sent");
       setForm({ name: "", phone: "", email: "", projectType: "Architecture", message: "" });
-    } catch {
+    } catch (error) {
+      console.error("Form submission error:", error);
       setStatus("error");
     }
   };

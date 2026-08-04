@@ -5,15 +5,21 @@ const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "onboarding@resend.dev";
 const ADMIN_EMAILS = ["Bakirassociates@gmail.com", "akhtargondal9696@gmail.com"];
 
 serve(async (req) => {
+  console.log("Function invoked, method:", req.method);
+  console.log("RESEND_API_KEY exists:", !!RESEND_API_KEY);
+  console.log("FROM_EMAIL:", FROM_EMAIL);
+
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
 
   try {
     const payload = await req.json();
+    console.log("Payload received:", JSON.stringify(payload));
     const { record } = payload;
 
     if (!record) {
+      console.log("No record in payload");
       return new Response(JSON.stringify({ error: "No record data" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -21,6 +27,7 @@ serve(async (req) => {
     }
 
     const { name, email, phone, project_type, message, created_at } = record;
+    console.log("Processing inquiry for:", email);
 
     // Send email to all admin emails
     const adminEmailResponse = await fetch("https://api.resend.com/emails", {
