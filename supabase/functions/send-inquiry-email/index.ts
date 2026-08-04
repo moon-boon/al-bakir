@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "onboarding@resend.dev";
-const ADMIN_EMAIL = "Bakirassociates@gmail.com";
+const ADMIN_EMAILS = ["Bakirassociates@gmail.com", "akhtargondal9696@gmail.com"];
 
 serve(async (req) => {
   if (req.method !== "POST") {
@@ -22,7 +22,7 @@ serve(async (req) => {
 
     const { name, email, phone, project_type, message, created_at } = record;
 
-    // Send email to admin
+    // Send email to all admin emails
     const adminEmailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -31,7 +31,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         from: FROM_EMAIL,
-        to: ADMIN_EMAIL,
+        to: ADMIN_EMAILS,
         subject: `New Inquiry: ${project_type} - ${name}`,
         reply_to: email,
         html: `
