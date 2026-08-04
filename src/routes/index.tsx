@@ -13,6 +13,7 @@ import { submitInquiry } from "@/lib/supabase";
 import logoMarkSrc from "@/assets/logo-mark.png";
 import logoSrc from "@/assets/logo.png";
 
+// Environment variables for Supabase and inquiry notifications configured via Vercel
 // Lazy load heavy components
 const Bento = lazy(() => import("@/components/Bento"));
 const LazyLeadership = lazy(() => import("@/components/Leadership"));
