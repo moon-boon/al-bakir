@@ -10,7 +10,7 @@ This guide will help you complete the email notification setup using Resend.
 
 | Name | Value |
 |------|-------|
-| `RESEND_API_KEY` | `re_35qaMVpz_9uPW89ugkhYTv66dmdxTF7YL` |
+| `RESEND_API_KEY` | (get from Resend dashboard → API Keys, do not commit to git) |
 | `FROM_EMAIL` | `Bakirassociates@gmail.com` |
 
 **How to add secrets:**

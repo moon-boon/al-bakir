@@ -2,7 +2,7 @@
 
 ## ✅ Completed Steps
 
-- [x] Created/obtained Resend API Key: `re_35qaMVpz_9uPW89ugkhYTv66dmdxTF7YL`
+- [x] Created/obtained Resend API Key (stored in Supabase secrets, not committed here)
 - [x] Verified sender email: `Bakirassociates@gmail.com` in Resend
 - [x] Updated Edge Function (`supabase/functions/send-inquiry-email/index.ts`) to use Resend API
 - [x] Form submission logic already implemented in `src/lib/supabase.ts`
@@ -15,7 +15,7 @@
 - [ ] Navigate to your al-bakir-copy project
 - [ ] Go to **Settings → Edge Functions → Secrets**
 - [ ] Add these two secrets:
-  - Name: `RESEND_API_KEY` → Value: `re_35qaMVpz_9uPW89ugkhYTv66dmdxTF7YL`
+  - Name: `RESEND_API_KEY` → Value: (get from Resend dashboard → API Keys, do not commit to git)
   - Name: `FROM_EMAIL` → Value: `Bakirassociates@gmail.com`
 
 ### 2. Enable the `http` Extension in Database
