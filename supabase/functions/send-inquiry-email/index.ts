@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "onboarding@resend.dev";
-const ADMIN_EMAILS = ["Bakirassociates@gmail.com", "akhtargondal9696@gmail.com", "jabbarahmad557788@gmail.com", "reyaanwarraich@gmail.com"];
+const ADMIN_EMAILS = ["Bakirassociates@gmail.com", "akhtargondal9696@gmail.com", "jabbarahmad557788@gmail.com", "reyaanwarraich@gmail.com", "dilawar_aziz@hotmail.com"];
 
 serve(async (req) => {
   console.log("Function invoked, method:", req.method);
