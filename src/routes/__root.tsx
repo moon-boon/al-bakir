@@ -84,11 +84,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Al Bakir Pvt Ltd, Design, Construction & Real Estate, Islamabad" },
       { property: "og:description", content: "Al Bakir Pvt Ltd: architecture, construction and real estate in B-17 Islamabad. Where dreams become true." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:url", content: "https://albakirpvtltd.com" },
+      { property: "og:site_name", content: "Al Bakir Pvt Ltd" },
+      { property: "og:locale", content: "en_PK" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Al Bakir Pvt Ltd, Design, Construction & Real Estate, Islamabad" },
       { name: "twitter:description", content: "Al Bakir Pvt Ltd: architecture, construction and real estate in B-17 Islamabad. Where dreams become true." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bb0427b7-8ada-4f36-bd28-0dc5fe9b0457/id-preview-60af8f20--b55a4b32-a40d-4bb2-96b4-890e1355fc67.lovable.app-1782408689555.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bb0427b7-8ada-4f36-bd28-0dc5fe9b0457/id-preview-60af8f20--b55a4b32-a40d-4bb2-96b4-890e1355fc67.lovable.app-1782408689555.png" },
+      { property: "og:image", content: "https://albakirpvtltd.com/hero-construction-poster.jpg" },
+      { name: "twitter:image", content: "https://albakirpvtltd.com/hero-construction-poster.jpg" },
+      { name: "robots", content: "index, follow" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -103,11 +107,54 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const BUSINESS_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "GeneralContractor",
+  name: "Al Bakir Pvt Ltd",
+  description:
+    "Integrated construction, architectural design, engineering, interior design and real estate services in B-17 Islamabad.",
+  url: "https://albakirpvtltd.com",
+  telephone: "+92-334-7402123",
+  email: "Bakirassociates@gmail.com",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Multi Gardens B-17",
+    addressLocality: "Islamabad",
+    addressCountry: "PK",
+  },
+  areaServed: "Islamabad, Pakistan",
+  contactPoint: [
+    { "@type": "ContactPoint", telephone: "+92-51-2765184", contactType: "customer service" },
+    { "@type": "ContactPoint", telephone: "+92-334-7402123", contactType: "customer service" },
+    { "@type": "ContactPoint", telephone: "+92-333-5116302", contactType: "customer service" },
+  ],
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"],
+      opens: "00:00",
+      closes: "23:59",
+    },
+  ],
+  sameAs: [
+    "https://www.facebook.com/p/Al-Bakir-pvtltd-100075875230679/",
+    "https://www.instagram.com/al_bakir_pvt_ltd/",
+    "https://www.youtube.com/@al-bakirstudio",
+    "https://www.tiktok.com/@albakirpvtltd",
+    "https://www.zameen.com/agents/Islamabad/AL-Bakir-pvt-ltd-196777/",
+  ],
+};
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          // Static, developer-authored business data - not user input.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(BUSINESS_JSON_LD) }}
+        />
       </head>
       <body>
         {children}

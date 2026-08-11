@@ -36,6 +36,7 @@ export const Route = createFileRoute("/gallery/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
       ],
+      links: [{ rel: "canonical", href: `https://albakirpvtltd.com/gallery/${params.slug}` }],
     };
   },
   beforeLoad: ({ params }) => {

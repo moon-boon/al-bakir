@@ -31,6 +31,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Al Bakir Pvt Ltd, Where Dreams Become True" },
       { property: "og:description", content: "Design, construction and real estate services in Islamabad. One trusted team from concept to handover." },
     ],
+    links: [{ rel: "canonical", href: "https://albakirpvtltd.com/" }],
   }),
   component: Index,
 });
