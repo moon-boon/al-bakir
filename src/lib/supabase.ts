@@ -16,21 +16,16 @@ export async function submitInquiry(data: {
   projectType: string;
   message: string;
 }) {
-  const { data: insertedData, error } = await supabase
-    .from("inquiries")
-    .insert({
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      project_type: data.projectType,
-      message: data.message,
-      status: "new",
-    })
-    .select();
+  const { error } = await supabase.from("inquiries").insert({
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    project_type: data.projectType,
+    message: data.message,
+    status: "new",
+  });
 
   if (error) {
     throw new Error(error.message);
   }
-
-  return insertedData;
 }

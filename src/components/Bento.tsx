@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import architectureDesignThumb from "@/assets/architecture-design-thumb.png";
+import architectureDesignThumb from "@/assets/architecture-design-thumb.jpg";
 import constructionThumb from "@/assets/construction-thumb.jpg";
 import realEstateThumb from "@/assets/real-estate-thumb.jpg";
 import { trackSpotlight } from "@/lib/utils";
