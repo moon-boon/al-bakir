@@ -17,15 +17,16 @@ export default defineConfig({
       // Optimize chunk sizes and code splitting
       rollupOptions: {
         output: {
-          manualChunks: {
-            // Split motion/animation library
-            motion: ["motion/react"],
-            // Split heavy components
-            components: ["@/components/Bento", "@/components/Leadership"],
-            // Split radix UI
-            radix: ["@radix-ui/react-accordion", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu"],
-            // Split Three.js
-            three: ["three"],
+          manualChunks(id) {
+            if (id.includes("node_modules/motion")) return "motion";
+            if (id.includes("/src/components/Bento") || id.includes("/src/components/Leadership")) return "components";
+            if (
+              id.includes("node_modules/@radix-ui/react-accordion") ||
+              id.includes("node_modules/@radix-ui/react-dialog") ||
+              id.includes("node_modules/@radix-ui/react-dropdown-menu")
+            )
+              return "radix";
+            if (id.includes("node_modules/three")) return "three";
           },
         },
       },
